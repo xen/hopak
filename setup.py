@@ -12,5 +12,5 @@ setup(name='formgear',
       # more examples here http://docs.python.org/distutils/examples.html#pure-python-distribution-by-package
       packages=['formgear', ],
       license = "BSD",
-      depends = ['mongoengine', 'WTForms'],
+      #depends = ['mongoengine', 'WTForms'],
      )
