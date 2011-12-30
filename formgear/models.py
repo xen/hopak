@@ -46,7 +46,7 @@ class MetaModel(type):
         return newbornclass
 
 class Model(object):
-    __metaclass__ = ModelBase
+    __metaclass__ = MetaModel
 
     class Meta:
         abstract = True
