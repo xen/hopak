@@ -1,0 +1,30 @@
+{% macro render_form(form) -%}
+
+{% for field in form %}
+{{ row(field, **kwargs) }}
+{% endfor %}
+<input type="hidden" value="1" name="form.submitted">
+{%- endmacro %}
+
+{% macro row(field) -%}
+<div class="clearfix {% if field.errors %}error{% endif %}">
+  <label for="errorInput">{{ field.label }}</label>
+  <div class="input">
+    {{ field(**kwargs)|safe }}
+    {% if field.errors %}<span class="help-inline">{{ field.errors|join(', ') }}</span>{% endif %}
+    {% if field.description %}<span class="help-block">{{ field.description }}</span>{% endif %}
+  </div>
+</div>
+{%- endmacro %}
+
+{% macro table(field) -%}
+{# As table #}
+
+
+{%- endmacro %}
+
+{% macro search(field) -%}
+{# As table #}
+
+
+{%- endmacro %}

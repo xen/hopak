@@ -2,6 +2,14 @@
 #
 from __future__ import print_function
 __author__ = 'xen'
+import yaml
+
+
+from widgets import *
+
+class ModelRegistry(object):
+    models = []
+
 
 class ModelBase(type):
     """
@@ -12,11 +20,19 @@ class ModelBase(type):
         print("Class bases:", bases)
         print("Class name:", name)
         print("Class attrs", attrs)
-        return super(MyType, cls).__new__(cls, name, bases, newattrs)
 
+        # register models in global list
+        ModelRegistry.models.append(cls)
+
+        newattrs = {}
+        cfg = {}
+        if attrs.has_key('__yaml__'):
+            cfg = yaml.load(open(attrs['__yaml__']))
+
+        cfg.update(attrs)
+
+        return super(ModelBase, cls).__new__(cls, name, bases, cfg)
 
 class Model(object):
     __metaclass__ = ModelBase
-    def __init__(self, *args, **kwargs):
-        pass
 
