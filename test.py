@@ -3,7 +3,11 @@
 
 __author__ = 'xen'
 
-from formgear.models import Model
+#from formgear.models import Model
 
-class User(Model):
-    __yaml__ = 'test/data/doctype.yaml'
+#class User(Model):
+#    __yaml__ = 'test/data/doctype.yaml'
+
+from formgear.widgets import TextWidget, WidgetRegistry
+
+print WidgetRegistry.widgets

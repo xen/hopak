@@ -5,34 +5,49 @@ __author__ = 'xen'
 import yaml
 
 
-from widgets import *
-
 class ModelRegistry(object):
-    models = []
+    models = {}
+
+    @classmethod
+    def resolve(cls, name):
+        return ModelRegistry.models[name]
+
+    @classmethod
+    def register(cls, model, name):
+        ModelRegistry.models[name]=model
+
+    @classmethod
+    def list(cls):
+        return ModelRegistry.models.keys()
 
 
-class ModelBase(type):
+
+class MetaModel(type):
     """
     Base model metaclass
     """
     def __new__(cls, name, bases, attrs):
-        print("Create new class:", cls)
-        print("Class bases:", bases)
-        print("Class name:", name)
-        print("Class attrs", attrs)
+        meta = attrs.pop('Meta', None)
+        abstract = getattr(meta, 'abstract', False)
+        registername = attrs.pop('name', name.lower())
 
-        # register models in global list
-        ModelRegistry.models.append(cls)
-
-        newattrs = {}
         cfg = {}
         if attrs.has_key('__yaml__'):
             cfg = yaml.load(open(attrs['__yaml__']))
 
         cfg.update(attrs)
 
-        return super(ModelBase, cls).__new__(cls, name, bases, cfg)
+        newbornclass = super(MetaModel, cls).__new__(cls, name, bases, cfg)
+
+        if not abstract:
+            #print("Register widget:", registername)
+            ModelRegistry.register(newbornclass, registername)
+
+        return newbornclass
 
 class Model(object):
     __metaclass__ = ModelBase
+
+    class Meta:
+        abstract = True
 

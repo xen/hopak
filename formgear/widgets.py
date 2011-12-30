@@ -2,10 +2,7 @@
 #
 from __future__ import print_function
 
-__author__ = 'xen'
-
 class WidgetRegistry(object):
-    # XXX нужны методы отображения и поиска по реестру
     widgets = {}
 
     @classmethod
@@ -138,8 +135,7 @@ class TextWidget(Widget):
       HTML5 атрибут placeholder, по умолчанию пусто
 
     """
-    #name = 'textwidget'
-
+    name = 'textwidget'
     template = 'textinput'
     size = None
     strip = True
