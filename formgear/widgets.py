@@ -1,26 +1,50 @@
 # -*- coding: utf-8 -*-
 #
+from __future__ import print_function
 
 __author__ = 'xen'
 
 class WidgetRegistry(object):
     # XXX нужны методы отображения и поиска по реестру
-    models = []
+    widgets = {}
+
+    @classmethod
+    def resolve(cls, name):
+        return WidgetRegistry.widgets[name]
+
+    @classmethod
+    def register(cls, widget, name):
+        WidgetRegistry.widgets[name]=widget
+
+    @classmethod
+    def list(cls):
+        return WidgetRegistry.widgets.keys()
 
 class MetaWidget(type):
     """
     Class for all widgets
     """
     def __new__(cls, name, bases, attrs):
-        print("Register new widget:", cls)
-        print("Class bases:", bases)
-        print("Class name:", name)
-        print("Class attrs", attrs)
+        #print("Forming new widget class:", cls)
+        #print("Class bases:", bases)
+        #print("Class name:", name)
+        #print("Class attrs", attrs)
+        meta = attrs.pop('Meta', None)
+        abstract = getattr(meta, 'abstract', False)
+        registername = attrs.pop('name', name.lower())
+        newbornclass = super(MetaWidget, cls).__new__(cls, name, bases, attrs)
 
-        # register models in global list
-        WidgetRegistry.models.append(cls)
+        if not abstract:
+            #print("Register widget:", registername)
+            WidgetRegistry.register(newbornclass, registername)
 
-        return super(MetaWidget, cls).__new__(cls, name, bases, attrs)
+        return newbornclass
+
+#    def __init__(cls, name, bases=None, dict=None):
+#        print("Register new widget:", cls)
+#        print("Class bases:", bases)
+#        print("Class name:", name)
+#        #print("Class attrs", dict)
 
 class Widget(object):
     """
@@ -62,11 +86,13 @@ class Widget(object):
     """
     __metaclass__ = MetaWidget
 
-
     # hidden = False
     error_class = 'error'
     css_class = None
     requirements = ()
+
+    class Meta:
+        abstract = True
 
     def __init__(self, **kw):
         self.__dict__.update(kw)
@@ -91,6 +117,8 @@ class Widget(object):
         """
         raise NotImplementedError
 
+print('----')
+
 class TextWidget(Widget):
     """
     Текстовый виджет. Служит для создания поля в формате <input type="{{type}}" />.
@@ -110,6 +138,7 @@ class TextWidget(Widget):
       HTML5 атрибут placeholder, по умолчанию пусто
 
     """
+    #name = 'textwidget'
 
     template = 'textinput'
     size = None
