@@ -8,16 +8,18 @@ Meta:
   - abstract: True
 
 fields:
-  - title: string
+  - name: Title
+    type: string
     length: 80
-    widget: input
-  - description: text
-    widget: textfield
-  - body: text
+    widget: text
+  - name: Description
+    widget: text
+  - name: body
+    type: text
     widget:
       type: wysiwyg
       skin: simple
   - author: string
     type:
       reference: users
-    widget: select
+    widget: text

@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 #
 from __future__ import print_function
+from formgear.fields import FieldsRegistry
+from formgear.widgets import WidgetRegistry
+
 __author__ = 'xen'
 import yaml
 
@@ -20,7 +23,8 @@ class ModelRegistry(object):
     def list(cls):
         return ModelRegistry.models.keys()
 
-
+class ParsingException(Exception):
+    pass
 
 class MetaModel(type):
     """
@@ -33,7 +37,25 @@ class MetaModel(type):
 
         cfg = {}
         if attrs.has_key('__yaml__'):
-            cfg = yaml.load(open(attrs['__yaml__']))
+            cfg = yaml.safe_load(open(attrs['__yaml__']))
+
+        if cfg.has_key('fields'):
+            new_fields = ()
+            for field in cfg['fields']:
+                # extracts widget information
+                widget = field.pop('widget', 'text').lower()
+                if type(widget) == type({}):
+                    wdgt = WidgetRegistry.resolve(widget.pop('type', 'text'))(**widget)
+                else:
+                    wdgt = WidgetRegistry.resolve(widget)()
+
+                typ = field.pop('type', 'string').lower()
+                if field.has_key('name'):
+                    f = FieldsRegistry.resolve(typ)
+                else:
+                    raise ParsingException
+                new_fields.append()
+
 
         cfg.update(attrs)
 

@@ -2,15 +2,25 @@
 #
 from __future__ import print_function
 
+class NotFoundWidgetException(Exception):
+    pass
+
 class WidgetRegistry(object):
     widgets = {}
 
     @classmethod
     def resolve(cls, name):
-        return WidgetRegistry.widgets[name]
+        if WidgetRegistry.widgets.has_key(name):
+            return WidgetRegistry.widgets[name]
+        else:
+            raise NotFoundWidgetException(name)
 
     @classmethod
     def register(cls, widget, name):
+        # XXX: I'm not sure about that. Don't looks healthy
+        if widget.alter_names:
+            for x in widget.alter_names:
+                WidgetRegistry.widgets[x]=widget
         WidgetRegistry.widgets[name]=widget
 
     @classmethod
@@ -37,11 +47,6 @@ class MetaWidget(type):
 
         return newbornclass
 
-#    def __init__(cls, name, bases=None, dict=None):
-#        print("Register new widget:", cls)
-#        print("Class bases:", bases)
-#        print("Class name:", name)
-#        #print("Class attrs", dict)
 
 class Widget(object):
     """
@@ -114,8 +119,6 @@ class Widget(object):
         """
         raise NotImplementedError
 
-print('----')
-
 class TextWidget(Widget):
     """
     Текстовый виджет. Служит для создания поля в формате <input type="{{type}}" />.
@@ -136,11 +139,12 @@ class TextWidget(Widget):
 
     """
     name = 'textwidget'
-    template = 'textinput'
+    template = 'templates/widgets/textinput.html'
     size = None
     strip = True
     placeholder = ''
     tagtype = 'text'
+    alter_names = ('text',)
 
     def serialize(self, field, cstruct, state):
         if not cstruct:
