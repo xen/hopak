@@ -1,17 +1,26 @@
 # -*- coding: utf-8 -*-
 #
 from __future__ import print_function
+from functools import partial
 from formgear.fields import FieldsRegistry
 from formgear.widgets import WidgetRegistry
 
 __author__ = 'xen'
 import yaml
 
+class NotFoundModelException(Exception):
+    pass
 
 class ModelRegistry(object):
     models = {}
 
     @classmethod
+    def resolve(cls, name):
+        if ModelRegistryModelRegistry.widgets.has_key(name.lower()):
+            return ModelRegistry.models[name.lower()]
+        else:
+            raise NotFoundModelException(name)
+
     def resolve(cls, name):
         return ModelRegistry.models[name]
 
@@ -39,27 +48,32 @@ class MetaModel(type):
         if attrs.has_key('__yaml__'):
             cfg = yaml.safe_load(open(attrs['__yaml__']))
 
+
+        new_fields = []
         if cfg.has_key('fields'):
-            new_fields = ()
+
             for field in cfg['fields']:
                 # extracts widget information
-                widget = field.pop('widget', 'text').lower()
+                widget = field.pop('widget', 'text')
                 if type(widget) == type({}):
-                    wdgt = WidgetRegistry.resolve(widget.pop('type', 'text'))(**widget)
+                    wdgt = partial(WidgetRegistry.resolve(widget.pop('type', 'text')), **widget)
                 else:
-                    wdgt = WidgetRegistry.resolve(widget)()
-
-                typ = field.pop('type', 'string').lower()
+                    wdgt = WidgetRegistry.resolve(widget)
+                # actual work with fields
                 if field.has_key('name'):
-                    f = FieldsRegistry.resolve(typ)
+                    f = FieldsRegistry.resolve(field.pop('type', 'string').lower())
                 else:
                     raise ParsingException
-                new_fields.append()
+                # XXX: here is missed part with validators
+                new_fields.append((field.pop('name'), f(widget = wdgt, **field)))
+            del cfg['fields']
 
 
         cfg.update(attrs)
-
         newbornclass = super(MetaModel, cls).__new__(cls, name, bases, cfg)
+
+        for fname, ffunc in new_fields:
+            setattr(newbornclass, fname, ffunc)
 
         if not abstract:
             #print("Register widget:", registername)

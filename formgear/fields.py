@@ -3,15 +3,25 @@
 import itertools
 from mongoengine.base import BaseField as MongoField
 
+class NotFoundFieldException(Exception):
+    pass
+
 class FieldsRegistry(object):
     fields = {}
 
     @classmethod
     def resolve(cls, name):
-        return FieldsRegistry.fields[name]
+        if FieldsRegistry.fields.has_key(name.lower()):
+            return FieldsRegistry.fields[name.lower()]
+        else:
+            raise NotFoundFieldException(name)
 
     @classmethod
     def register(cls, field, name):
+        # XXX: Resolve when this Field is already registered
+        if getattr(field, 'alter_names', None):
+            for x in field.alter_names:
+                FieldsRegistry.fields[x]=field
         FieldsRegistry.fields[name]=field
 
     @classmethod
@@ -37,6 +47,15 @@ class MetaField(type):
 class BaseField(MongoField):
     __metaclass__ = MetaField
 
+    def __init__(self, **kwargs):
+        base_params = ('db_field', 'name', 'required', 'default',
+                         'unique', 'unique_with', 'primary_key',
+                         'validation', 'choices', 'verbose_name', 'help_text')
+        kw = {}
+        for x in base_params:
+            if kwargs.has_key(x): kw[x]= kwargs[x]
+        super(BaseField, __init__, **kw)
+
     def __repr__(self):
         return '<%s.%s object at %d>' % (
             self.__module__,
@@ -46,5 +65,14 @@ class BaseField(MongoField):
 
 class TextField(BaseField):
 
-    def __init__(self, default='', help_text='', primary_key=False, unique=False):
+    alter_names = ('text',)
+
+    def __init__(self, **kwargs):
         self.default = ''
+
+class StringField(BaseField):
+
+    alter_names = ('string',)
+
+    def __init__(self, **kwargs):
+        pass

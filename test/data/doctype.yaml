@@ -19,7 +19,10 @@ fields:
     widget:
       type: wysiwyg
       skin: simple
-  - author: string
-    type:
-      reference: users
-    widget: text
+  - name: Author
+    type: string
+
+
+#    type:
+#      reference: users
+#    widget: text
