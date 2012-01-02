@@ -1,26 +1,23 @@
 title: Document
 description: >
-  Document content type, usefull for common sites to store simple 
+  Document content type, usefull for common sites to store simple
   pages.
 dublincore: True
 
-meta:
+Meta:
   - abstract: True
 
 fields:
-  - title:
-    type: string
+  - title: string
     length: 80
     widget: input
-  - description:
-    type: text
+  - description: text
     widget: textfield
-  - body:
-    type: text
-    widget: 
+  - body: text
+    widget:
       type: wysiwyg
       skin: simple
-  - author:
-    type: 
+  - author: string
+    type:
       reference: users
     widget: select
