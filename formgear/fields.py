@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-#
 import itertools
 from mongoengine.base import BaseField as MongoField
 
