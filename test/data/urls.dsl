@@ -1,0 +1,8 @@
+- /arhcive/ - view_archive
+  - (?P<year>\d{4}) - view_year
+    - (?P<month>\d{1,2}) - view_month
+      - (?P<day>\d{1,2}) - view_day
+        - (?P<slug>[-\w]+)$ - Page:view_page
+- about/
+   - contact - "О нас" (Page)
+   - history - "История" (Page)

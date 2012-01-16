@@ -2,6 +2,8 @@
 #
 from __future__ import print_function
 
+from jinja2 import Environment, FileSystemLoader
+
 class NotFoundWidgetException(Exception):
     pass
 
@@ -119,6 +121,13 @@ class Widget(object):
         """
         raise NotImplementedError
 
+    def render(self, field, state, **kw):
+        """ Here is should be field rendering
+        """
+        # XXX: надо как-то пробрасывать сюда окружение, подробнее http://jinja.pocoo.org/docs/api/
+        tmplt = FileSystemLoader('./templates/').get_template(self.template)
+        return tmplt.render(field, state, **kw)
+
 class TextWidget(Widget):
     """
     Текстовый виджет. Служит для создания поля в формате <input type="{{type}}" />.
@@ -166,6 +175,7 @@ class WYSIWYGWidget(Widget):
     size = None
     strip = False
     placeholder = ''
+
     def serialize(self, field, cstruct, state):
         raise NotImplemented
 

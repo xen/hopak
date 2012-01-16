@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 import itertools
-from mongoengine.base import BaseField as MongoField
+#from mongoengine.base import BaseField as MongoField
+
+import controllers
 
 class NotFoundFieldException(Exception):
     pass
 
 class FieldsRegistry(object):
+    """ Registry needed to resolve fields from YAML file """
     fields = {}
 
     @classmethod
@@ -43,24 +46,79 @@ class MetaField(type):
 
         return newbornclass
 
-class BaseField(MongoField):
-    __metaclass__ = MetaField
 
-    def __init__(self, **kwargs):
-        base_params = ('db_field', 'name', 'required', 'default',
-                         'unique', 'unique_with', 'primary_key',
-                         'validation', 'choices', 'verbose_name', 'help_text')
-        kw = {}
-        for x in base_params:
-            if kwargs.has_key(x): kw[x]= kwargs[x]
-        super(BaseField, __init__, **kw)
+class BaseField(object):
+    """ BaseField is very similar to MongoEngine fields.
+    """
+    pass
+
+class BaseField(object):
+    """ BaseField is very similar to MongoEngine fields.
+    """
+
+    # Fields may have _types inserted into indexes by default
+    _index_with_types = True
+    _geo_index = False
+
+    def __init__(self, db_field=None, required=False, default=None,
+                 unique=False, unique_with=None, primary_key=False,
+                 validators=None, **kw):
+        """
+        Params:
+
+          * db_field - set explicit field name in database
+          * required - quick alias for validator.Required
+          * title - field name
+          * default=None - default value
+          * unique=False - mongodb unique field index
+          * unique_with=None - mongodb unique_with field index
+          * primary_key=False - mongodb field index for primary_key
+          * validators=None - set of validators from controllers collection (or your own)
+          * description=None - field help text description
+          * widget - widget to represent field value
+
+        """
+        self.db_field = db_field if not primary_key else '_id'
+
+        self.required = required or primary_key
+        self.unique = bool(unique or unique_with)
+        self.unique_with = unique_with
+        self.default = default
+
+
+        if validators:
+            if controllers.Required in validators:
+                self.required = True
+        if required:
+            self.required = True
+            if controllers.Required not in validation:
+                validation.append(validators.Required)
+
+        self.__dict__.update(kw)
+
+    def validate(self, value):
+        """Perform validation on a value.
+        """
+        pass
+
+    def translate(self, msgid):
+        """ Use the translator passed to the renderer of this field to
+        translate the msgid into a term.  If the renderer does not have a
+        translator, this method will return the msgid."""
+        translate = getattr(self.renderer, 'translate', None)
+        if translate is not None:
+            return translate(msgid)
+        return msgid
 
     def __repr__(self):
         return '<%s.%s object at %d>' % (
             self.__module__,
             self.__class__.__name__,
-            id(self),
+            id(self)
             )
+
+    def __call__(self, state="view", **kwargs):
+        self.widget.render(self, state, **kwargs)
 
 class TextField(BaseField):
 

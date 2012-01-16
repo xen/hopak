@@ -87,3 +87,22 @@ class Model(object):
     class Meta:
         abstract = True
 
+    def fields(self, filter_fields=[]):
+        if filter_fields:
+            return "Oh"
+
+
+    def form(self, state, fields=[]):
+        """ Renders form from model instance
+        """
+        if fields:
+            iterfields = fields
+        else:
+            iterfields = self.fields()
+        return
+
+
+
+
+
+
