@@ -2,3 +2,7 @@
   <h3>{{ field.name }}</h3>
   <p>{{ field.value }}</p>
 {%- endmacro %}
+
+{%- macro edit(field) %}
+  <input name="{{ field.name }}" type="{{ field.type }}" value="{{ form.value }} "/>
+{% endmacro %}
