@@ -4,3 +4,5 @@ formgear.egg-info
 bin
 etc
 .idea
+.env/
+build/
