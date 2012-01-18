@@ -1,0 +1,11 @@
+#
+#
+Sitemap:
+- rule: ['/arhcive/', view_archive]
+  - rule: [r'(?P<year>\d{4})', view_year]
+    - rule: [r'(?P<month>\d{1,2})', view_month]
+      - rule: [r'(?P<day>\d{1,2})', view_day]
+        - rule: [r'(?P<slug>[-\w]+)$', Page: view_page]
+- rule: [about, Page: 'О нас']
+   - rule: [contact, Page: 'О нас']
+   - rule: [history, Page: 'История']

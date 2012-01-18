@@ -1,0 +1,39 @@
+title: User
+description: >
+  User profile with common fields used on various sites
+
+fields:
+  - name: name
+    title: Name
+    type: string
+    length: 80
+    required: 1
+  - name: second
+    title: Second Name
+    type: string
+    length: 80
+  - name: bday
+    title: Birthday
+    type: date
+    required: 1
+    widget: date
+  - name: about
+    title: About
+    description: >
+      Some text about you here is welcome
+    db_name: about
+    widget:
+      name: wysiwyg
+      theme: simple
+  - name: friends
+    type: reference
+    reference_model: User
+    desription: >
+      List of your friends on site
+
+forms:
+  - name: register
+    fields: [name, second, bday]
+    view: 'register_template'
+  - name: public
+    fields: [-about]

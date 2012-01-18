@@ -12,6 +12,7 @@ fields:
     type: string
     length: 80
     widget: text
+    required: 1
   - name: Description
     widget: text
   - name: body
