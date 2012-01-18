@@ -46,12 +46,6 @@ class MetaField(type):
 
         return newbornclass
 
-
-class BaseField(object):
-    """ BaseField is very similar to MongoEngine fields.
-    """
-    pass
-
 class BaseField(object):
     """ BaseField is very similar to MongoEngine fields.
     """
