@@ -50,6 +50,7 @@ class BaseField(object):
     """ BaseField is very similar to MongoEngine fields.
     """
 
+    __metaclass__ = MetaField
     # Fields may have _types inserted into indexes by default
     _index_with_types = True
     _geo_index = False
