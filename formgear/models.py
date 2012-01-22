@@ -15,22 +15,23 @@ class ModelRegistry(object):
     models = {}
 
     @classmethod
-    def resolve(cls, name):
-        if ModelRegistryModelRegistry.widgets.has_key(name.lower()):
-            return ModelRegistry.models[name.lower()]
-        else:
-            raise NotFoundModelException(name)
+    def resolve(cls, name, default=None):
+        if name not in cls.models:
+            if default is None:
+                raise NotFoundModelException('model %r not found' % name)
 
-    def resolve(cls, name):
-        return ModelRegistry.models[name]
+            return default
+
+        return cls.models[name]
 
     @classmethod
     def register(cls, model, name):
-        ModelRegistry.models[name]=model
+        assert name not in cls.models, 'Double registration of %r' % name
+        cls.models[name]=model
 
     @classmethod
     def list(cls):
-        return ModelRegistry.models.keys()
+        return cls.models.keys()
 
 class ParsingException(Exception):
     pass
