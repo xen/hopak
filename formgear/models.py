@@ -4,6 +4,7 @@ from __future__ import print_function
 from functools import partial
 from formgear.fields import FieldsRegistry
 from formgear.widgets import WidgetRegistry
+from registry import Registry
 
 __author__ = 'xen'
 import yaml
@@ -11,27 +12,8 @@ import yaml
 class NotFoundModelException(Exception):
     pass
 
-class ModelRegistry(object):
-    models = {}
-
-    @classmethod
-    def resolve(cls, name, default=None):
-        if name not in cls.models:
-            if default is None:
-                raise NotFoundModelException('model %r not found' % name)
-
-            return default
-
-        return cls.models[name]
-
-    @classmethod
-    def register(cls, model, name):
-        assert name not in cls.models, 'Double registration of %r' % name
-        cls.models[name]=model
-
-    @classmethod
-    def list(cls):
-        return cls.models.keys()
+class ModelRegistry(Registry):
+    NotFound = NotFoundModelException
 
 class ParsingException(Exception):
     pass
@@ -103,9 +85,3 @@ class Model(object):
         else:
             iterfields = self.fields()
         return iterfields
-
-
-
-
-
-

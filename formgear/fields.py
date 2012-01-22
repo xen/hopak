@@ -3,32 +3,15 @@ import itertools
 #from mongoengine.base import BaseField as MongoField
 
 import controllers
+from registry import Registry
 
 class NotFoundFieldException(Exception):
     pass
 
-class FieldsRegistry(object):
+class FieldsRegistry(Registry):
     """ Registry needed to resolve fields from YAML file """
     fields = {}
-
-    @classmethod
-    def resolve(cls, name):
-        if FieldsRegistry.fields.has_key(name.lower()):
-            return FieldsRegistry.fields[name.lower()]
-        else:
-            raise NotFoundFieldException(name)
-
-    @classmethod
-    def register(cls, field, name):
-        # XXX: Resolve when this Field is already registered
-        if getattr(field, 'alter_names', None):
-            for x in field.alter_names:
-                FieldsRegistry.fields[x]=field
-        FieldsRegistry.fields[name]=field
-
-    @classmethod
-    def list(cls):
-        return FieldsRegistry.fields.keys()
+    NotFound = NotFoundFieldException
 
 class MetaField(type):
     """

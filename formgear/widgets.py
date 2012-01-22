@@ -3,31 +3,14 @@
 from __future__ import print_function
 
 from jinja2 import Environment, FileSystemLoader
+from registry import Registry
 
 class NotFoundWidgetException(Exception):
     pass
 
-class WidgetRegistry(object):
-    widgets = {}
+class WidgetRegistry(Registry):
+    NotFound = NotFoundWidgetException
 
-    @classmethod
-    def resolve(cls, name):
-        if WidgetRegistry.widgets.has_key(name.lower()):
-            return WidgetRegistry.widgets[name.lower()]
-        else:
-            raise NotFoundWidgetException(name)
-
-    @classmethod
-    def register(cls, widget, name):
-        # XXX: I'm not sure about that. Don't looks healthy
-        if getattr(widget, 'alter_names', None):
-            for x in widget.alter_names:
-                WidgetRegistry.widgets[x]=widget
-        WidgetRegistry.widgets[name]=widget
-
-    @classmethod
-    def list(cls):
-        return WidgetRegistry.widgets.keys()
 
 class MetaWidget(type):
     """
