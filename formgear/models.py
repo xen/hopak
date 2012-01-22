@@ -10,15 +10,19 @@ class ModelRegistry(object):
 
     @classmethod
     def resolve(cls, name):
-        return ModelRegistry.models[name]
+        if name not in cls.models:
+            return
+
+        return cls.models[name]
 
     @classmethod
     def register(cls, model, name):
-        ModelRegistry.models[name]=model
+        assert name not in cls.models, 'Double registration of %r' % name
+        cls.models[name]=model
 
     @classmethod
     def list(cls):
-        return ModelRegistry.models.keys()
+        return cls.models.keys()
 
 
 
