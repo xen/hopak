@@ -49,32 +49,32 @@ class MetaModel(type):
         if attrs.has_key('__yaml__'):
             cfg = yaml.safe_load(open(attrs['__yaml__']))
 
+        fields = []
+        for field in cfg.pop('fields', []):
+            # extracts widget information
+            widget = field.pop('widget', 'text')
 
-        new_fields = []
-        if cfg.has_key('fields'):
-
-            for field in cfg['fields']:
-                # extracts widget information
-                widget = field.pop('widget', 'text')
-                if type(widget) == type({}):
-                    wdgt = partial(WidgetRegistry.resolve(widget.pop('type', 'text')), **widget)
-                else:
-                    wdgt = WidgetRegistry.resolve(widget)
-                # actual work with fields
-                if field.has_key('name'):
-                    f = FieldsRegistry.resolve(field.pop('type', 'string').lower())
-                else:
-                    raise ParsingException
-                # XXX: here is missed part with validators
-                new_fields.append((field.pop('name'), f(widget = wdgt, **field)))
-            del cfg['fields']
-
+            if type(widget) == type({}):
+                wdgt = partial(WidgetRegistry.resolve(widget.pop('type', 'text')), **widget)
+            else:
+                wdgt = WidgetRegistry.resolve(widget)
+            # actual work with fields
+            if field.has_key('name'):
+                f = FieldsRegistry.resolve(field.pop('type', 'string').lower())
+            else:
+                raise ParsingException
+            # XXX: here is missed part with validators
+            fields.append((field.pop('name'), f(widget = wdgt, **field)))
 
         cfg.update(attrs)
         newbornclass = super(MetaModel, cls).__new__(cls, name, bases, cfg)
 
-        for fname, ffunc in new_fields:
+        for fname, ffunc in fields:
             setattr(newbornclass, fname, ffunc)
+
+        newbornclass._fields = [
+            ffunc for _fname, ffunc in fields
+        ]
 
         if not abstract:
             #print("Register widget:", registername)
@@ -92,15 +92,17 @@ class Model(object):
         if filter_fields:
             return "Oh"
 
+        return self._fields
 
-    def form(self, state, fields=[]):
+
+    def form(self, fields=[]):
         """ Renders form from model instance
         """
         if fields:
             iterfields = fields
         else:
             iterfields = self.fields()
-        return
+        return iterfields
 
 
 

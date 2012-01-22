@@ -1,16 +1,17 @@
-{% macro render_form(form) -%}
+{% macro render_form(form, state) -%}
 
 {% for field in form %}
-{{ row(field, **kwargs) }}
+{{ row(field, state=state, **kwargs) }}
 {% endfor %}
 <input type="hidden" value="1" name="form.submitted">
 {%- endmacro %}
 
-{% macro row(field) -%}
+{% macro row(field, state='view') -%}
 <div class="clearfix {% if field.errors %}error{% endif %}">
   <label for="errorInput">{{ field.label }}</label>
   <div class="input">
-    {{ field(**kwargs)|safe }}
+    {% import field.widget.template as w %}
+    {{ w[state](field) }}
     {% if field.errors %}<span class="help-inline">{{ field.errors|join(', ') }}</span>{% endif %}
     {% if field.description %}<span class="help-block">{{ field.description }}</span>{% endif %}
   </div>

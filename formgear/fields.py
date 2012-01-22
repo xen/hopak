@@ -113,7 +113,7 @@ class BaseField(object):
             )
 
     def __call__(self, state="view", **kwargs):
-        self.widget.render(self, state, **kwargs)
+        return self.widget.render(self, state, **kwargs)
 
 class TextField(BaseField):
 
@@ -121,10 +121,13 @@ class TextField(BaseField):
 
     def __init__(self, **kwargs):
         self.default = ''
+        self.widget_class = kwargs.get('widget')
+        self.widget = self.widget_class()
 
 class StringField(BaseField):
 
     alter_names = ('string',)
 
     def __init__(self, **kwargs):
-        pass
+        self.widget_class = kwargs.get('widget')
+        self.widget = self.widget_class()

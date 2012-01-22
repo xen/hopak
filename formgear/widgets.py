@@ -125,8 +125,9 @@ class Widget(object):
         """ Here is should be field rendering
         """
         # XXX: надо как-то пробрасывать сюда окружение, подробнее http://jinja.pocoo.org/docs/api/
-        tmplt = FileSystemLoader('./templates/').get_template(self.template)
-        return tmplt.render(field, state, **kw)
+        env = Environment(loader=FileSystemLoader('./'))
+        tmplt = env.get_template(self.template)
+        return tmplt.render(field=field, state=state, **kw)
 
 class TextWidget(Widget):
     """
@@ -148,7 +149,7 @@ class TextWidget(Widget):
 
     """
     name = 'textwidget'
-    template = 'templates/widgets/textinput.html'
+    template = 'widgets/textinput.html'
     size = None
     strip = True
     placeholder = ''
@@ -171,7 +172,7 @@ class TextWidget(Widget):
 
 class WYSIWYGWidget(Widget):
     name = 'wysiwyg'
-    template = 'templates/widgets/wysiwyg.html'
+    template = './widgets/wysiwyg.html'
     size = None
     strip = False
     placeholder = ''
