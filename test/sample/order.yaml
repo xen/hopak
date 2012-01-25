@@ -1,0 +1,58 @@
+title: Order
+description: >
+    Table order data
+
+fields:
+  - name: contact_person
+    title: Your Name
+    type: string
+    length : 80
+    required: 1
+  - name: contact_phone
+    title: You Phone
+    type: string
+    length: 80
+  - name: date
+    title: Date #???
+    type: datetime
+    required: 1
+#  - name: event
+#    title: Event
+#    type: reference
+#  - name: zone
+#    title: Zone
+  - name: guests
+    title: Number of guests
+    type: int
+    validators:
+      max: 20
+      min: 1
+    default: 2
+  - name: comment
+    title: Comments
+    type: text
+#  - name: status
+#
+  - name: decline_reason
+    title: Decline reason
+    type: text
+  - name: taxi
+    title: Order taxi?
+    type: boolean
+  - name: cdate
+    type: datetime
+    default: now
+  - name: email
+    title: You email
+    type: email
+  - name: friends_email
+    title: Friends emails
+    type: text
+  - name: referrer
+    type: string
+
+forms:
+  - name: stepone
+    fields: [contact_person, contact_phone, date, guests, comment, email]
+  - name: steptwo
+    fields: [friends_email, taxi]

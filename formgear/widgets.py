@@ -112,7 +112,7 @@ class Widget(object):
         tmplt = env.get_template(self.template)
         return tmplt.render(field=field, state=state, **kw)
 
-class TextWidget(Widget):
+class StringWidget(Widget):
     """
     Текстовый виджет. Служит для создания поля в формате <input type="{{type}}" />.
 
@@ -131,13 +131,13 @@ class TextWidget(Widget):
       HTML5 атрибут placeholder, по умолчанию пусто
 
     """
-    name = 'textwidget'
-    template = 'widgets/textinput.html'
+    name = 'stringwidget'
+    template = 'widgets/input.html'
     size = None
     strip = True
     placeholder = ''
     tagtype = 'text'
-    alter_names = ('text',)
+    alter_names = ('string', 'str', )
 
     def serialize(self, field, cstruct, state):
         if not cstruct:
@@ -152,6 +152,9 @@ class TextWidget(Widget):
         if not pstruct:
             return None
         return pstruct
+
+class TextWidget(Widget):
+    alter_names = ('text', 'textarea', )
 
 class WYSIWYGWidget(Widget):
     name = 'wysiwyg'

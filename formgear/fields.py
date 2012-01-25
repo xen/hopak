@@ -2,7 +2,11 @@
 import itertools
 #from mongoengine.base import BaseField as MongoField
 
+import datetime, re
+
+
 import controllers
+import widgets
 from registry import Registry
 
 class NotFoundFieldException(Exception):
@@ -37,10 +41,11 @@ class BaseField(object):
     # Fields may have _types inserted into indexes by default
     _index_with_types = True
     _geo_index = False
+    widget = widgets.StringWidget()
 
     def __init__(self, db_field=None, required=False, default=None,
                  unique=False, unique_with=None, primary_key=False,
-                 validators=None, **kw):
+                 validators=[], widget=None, **kw):
         """
         Params:
 
@@ -63,14 +68,16 @@ class BaseField(object):
         self.unique_with = unique_with
         self.default = default
 
-
-        if validators:
-            if controllers.Required in validators:
-                self.required = True
+        self.validators = validators
+        if controllers.Required in self.validators:
+            self.required = True
         if required:
             self.required = True
-            if controllers.Required not in validation:
-                validation.append(validators.Required)
+            if controllers.Required not in self.validators:
+                self.validators.append(controllers.Required)
+
+        if widget:
+            self.widget = widget
 
         self.__dict__.update(kw)
 
@@ -98,19 +105,83 @@ class BaseField(object):
     def __call__(self, state="view", **kwargs):
         return self.widget.render(self, state, **kwargs)
 
-class TextField(BaseField):
-
-    alter_names = ('text',)
-
-    def __init__(self, **kwargs):
-        self.default = ''
-        self.widget_class = kwargs.get('widget')
-        self.widget = self.widget_class()
-
 class StringField(BaseField):
+    """ Simple string
+    """
 
     alter_names = ('string',)
 
+    def __init__(self, regex=None, max_length=None, min_length=None, **kwargs):
+        self.regex = re.compile(regex) if regex else None
+        self.max_length = max_length
+        self.min_length = min_length
+        super(StringField, self).__init__(**kwargs)
+
+class TextField(BaseField):
+    """ Plain text field.
+    XXX: Add text processors, may be including typography.
+    """
+    alter_names = ('text',)
+    widget = widgets.TextWidget
+
+    def __init__(self, max_length=None, min_length=None, **kwargs):
+        self.max_length = max_length
+        self.min_length = min_length
+        super(TextField, self).__init__(**kwargs)
+
+
+class DateField(BaseField):
+    alter_names = ('date', )
+
+    format='%Y/%m/%d'
+    # self.data = datetime.datetime.strptime(date_str, self.format).date()
     def __init__(self, **kwargs):
-        self.widget_class = kwargs.get('widget')
-        self.widget = self.widget_class()
+        """
+        """
+        pass
+
+class DateTimeField(BaseField):
+
+    alter_names = ('datetime',)
+
+class TimeField(BaseField):
+    alter_names = ('time', )
+
+class IntegerField(BaseField):
+    alter_names = ('int', 'integer', )
+
+class BooleanField(BaseField):
+    alter_names = ('bool', 'boolean', )
+
+class EmailField(BaseField):
+    alter_names = ('email', )
+
+class FloatField(BaseField):
+    alter_names = ('float', )
+
+class URLField(BaseField):
+    alter_names = ('url', 'link', )
+
+    #XXX: Y NO ccTLD like xn--shitshitshit domains?
+    URL_REGEX = re.compile(
+            r'^https?://'
+            r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|'
+            r'localhost|'
+            r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'
+            r'(?::\d+)?'
+            r'(?:/?|[/?]\S+)$', re.IGNORECASE
+        )
+
+    def __init__(self, verify_exists=False):
+        self.verify_exists = verify_exists
+        super(URLField, self).__init__(**kwargs)
+
+
+class FileField(BaseField):
+    alter_names = ('file', 'blob', )
+
+class ImageField(BaseField):
+    alter_names = ('img', 'image', )
+
+class GeoPointField(BaseField):
+    alter_names = ('geo', 'geopoint', )
