@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 from __future__ import print_function
+import os
 
 from jinja2 import Environment, FileSystemLoader
 from registry import Registry
@@ -8,8 +9,33 @@ from registry import Registry
 class NotFoundWidgetException(Exception):
     pass
 
-class WidgetRegistry(Registry):
-    NotFound = NotFoundWidgetException
+#class WidgetRegistry(Registry):
+#    NotFound = NotFoundWidgetException
+class WidgetRegistry(object):
+    data = {}
+
+    @classmethod
+    def resolve(cls, name, default=None):
+        name = name.lower()
+        if name in cls.data:
+            return cls.data[name]
+        elif default is not None:
+            return default
+        else:
+            Exc = getattr(cls, 'NotFound', NotFoundWidgetException)
+            raise Exc('Key %r not found in %r' % (name, cls))
+
+    @classmethod
+    def register(cls, val, name):
+        # XXX: I'm not sure about that. Don't looks healthy
+        for x in getattr(val, 'alter_names', []):
+            cls.data[x] = val
+
+        cls.data[name] = val
+
+    @classmethod
+    def list(cls):
+        return cls.data.keys()
 
 
 class MetaWidget(type):
@@ -108,7 +134,7 @@ class Widget(object):
         """ Here is should be field rendering
         """
         # XXX: надо как-то пробрасывать сюда окружение, подробнее http://jinja.pocoo.org/docs/api/
-        env = Environment(loader=FileSystemLoader('./'))
+        env = Environment(loader=FileSystemLoader(os.path.dirname(__file__)))
         tmplt = env.get_template(self.template)
         return tmplt.render(field=field, state=state, **kw)
 
@@ -155,6 +181,7 @@ class StringWidget(Widget):
 
 class TextWidget(Widget):
     alter_names = ('text', 'textarea', )
+    template = 'widgets/text.html'
 
 class WYSIWYGWidget(Widget):
     name = 'wysiwyg'

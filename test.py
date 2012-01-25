@@ -15,5 +15,7 @@ class Order(Model):
     __yaml__ = 'test/sample/order.yaml'
 
 order = Order()
+for field in order.form():
+    print field('view')
 
 print ModelRegistry.list()

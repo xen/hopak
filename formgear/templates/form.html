@@ -10,8 +10,7 @@
 <div class="clearfix {% if field.errors %}error{% endif %}">
   <label for="errorInput">{{ field.label }}</label>
   <div class="input">
-    {% import field.widget.template as w %}
-    {{ w[state](field) }}
+    {{ field(state) }}
     {% if field.errors %}<span class="help-inline">{{ field.errors|join(', ') }}</span>{% endif %}
     {% if field.description %}<span class="help-block">{{ field.description }}</span>{% endif %}
   </div>

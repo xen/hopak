@@ -37,9 +37,9 @@ class MetaModel(type):
             widget = field.pop('widget', 'text')
 
             if type(widget) == type({}):
-                wdgt = partial(WidgetRegistry.resolve(widget.pop('type', 'text')), **widget)
+                wdgt = WidgetRegistry.resolve(widget.pop('type', 'text'))(**widget)
             else:
-                wdgt = WidgetRegistry.resolve(widget)
+                wdgt = WidgetRegistry.resolve(widget)()
             # actual work with fields
             if field.has_key('name'):
                 f = FieldsRegistry.resolve(field.pop('type', 'string').lower())
