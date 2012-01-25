@@ -1,12 +1,14 @@
+text
+{#
 {%- macro view(field) %}
   <h3>{{ field.name }}</h3>
   <p>{{ field.value }}</p>
 {%- endmacro %}
 
 {%- macro edit(field) %}
-  {# XXX: css style missed #}
   <textarea name="{{ field.name }}" placeholder="{{ field.placeholder }}"
             {% if field.required %}required{% endif %}
             {% if field.autofocus %}autofocus{% endif %}
             rows="4" cols="50">{{ field.value }}</textarea>
 {%- endmacro %}
+#}

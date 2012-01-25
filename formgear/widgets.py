@@ -158,7 +158,7 @@ class StringWidget(Widget):
 
     """
     name = 'stringwidget'
-    template = 'widgets/input.html'
+    template = 'templates/widgets/input.html'
     size = None
     strip = True
     placeholder = ''
@@ -181,11 +181,11 @@ class StringWidget(Widget):
 
 class TextWidget(Widget):
     alter_names = ('text', 'textarea', )
-    template = 'widgets/text.html'
+    template = 'templates/widgets/text.html'
 
 class WYSIWYGWidget(Widget):
     name = 'wysiwyg'
-    template = './widgets/wysiwyg.html'
+    template = 'templates/widgets/wysiwyg.html'
     size = None
     strip = False
     placeholder = ''
