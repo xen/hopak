@@ -48,6 +48,10 @@ class MetaModel(type):
             # XXX: here is missed part with validators
             fields.append((field.pop('name'), f(widget = wdgt, **field)))
 
+        forms = {}
+        for form in cfg.pop('forms', []):
+            forms[form['name']] = form['fields']
+
         cfg.update(attrs)
         newbornclass = super(MetaModel, cls).__new__(cls, name, bases, cfg)
 
@@ -57,6 +61,8 @@ class MetaModel(type):
         newbornclass._fields = [
             ffunc for _fname, ffunc in fields
         ]
+
+        newbornclass.forms = forms
 
         if not abstract:
             #print("Register widget:", registername)
@@ -70,18 +76,28 @@ class Model(object):
     class Meta:
         abstract = True
 
-    def fields(self, filter_fields=[]):
-        if filter_fields:
-            return "Oh"
+    def __iter__(self):
+        return iter(self._fields)
 
-        return self._fields
+    def __getitem__(self, name):
+        """Attrubute-style field and forms access.
+        """
+        try:
+            if name in self._fields:
+                return getattr(self, name)
+        except AttributeError:
+            pass
+        if name in self.forms:
+            return self.form(fields=self.forms[name])
+        raise KeyError(name)
 
+    def __setitem__(self, name, value):
+        raise NotImplementedError
 
     def form(self, fields=[]):
         """ Renders form from model instance
         """
         if fields:
-            iterfields = fields
+            raise NotImplementedError
         else:
-            iterfields = self.fields()
-        return iterfields
+            return self._fields

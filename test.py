@@ -14,6 +14,6 @@ john = User()
 class Order(Model):
     __yaml__ = 'test/sample/order.yaml'
 
-
+order = Order()
 
 print ModelRegistry.list()
