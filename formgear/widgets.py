@@ -104,13 +104,17 @@ class Widget(object):
         """
         raise NotImplementedError
 
-    def render(self, field, state, **kw):
+    def render(self, field, state, env=None, **kw):
         """ Here is should be field rendering
         """
-        # XXX: надо как-то пробрасывать сюда окружение, подробнее http://jinja.pocoo.org/docs/api/
-        env = Environment(loader=FileSystemLoader(os.path.dirname(__file__)))
-        tmplt = env.get_template('templates/widgets/widget.html')
-        return tmplt.render(template=self.template, field=field, state=state, kw=kw)
+        if not env:
+            env = Environment(loader=FileSystemLoader(os.path.dirname(__file__)))
+        tmplt = env.get_template(self.template)
+        macro = getattr(tmplt.module, state, None)
+        if not macro:
+            return '' # XXX: output red text?
+
+        return macro(field=field, **kw)
 
 class StringWidget(Widget):
     """
@@ -132,7 +136,7 @@ class StringWidget(Widget):
 
     """
     name = 'stringwidget'
-    template = 'templates/widgets/input.html'
+    template = 'widgets/input.html'
     size = None
     strip = True
     placeholder = ''
@@ -155,11 +159,11 @@ class StringWidget(Widget):
 
 class TextWidget(Widget):
     alter_names = ('text', 'textarea', )
-    template = 'templates/widgets/text.html'
+    template = 'widgets/text.html'
 
 class WYSIWYGWidget(Widget):
     name = 'wysiwyg'
-    template = 'templates/widgets/wysiwyg.html'
+    template = 'widgets/wysiwyg.html'
     size = None
     strip = False
     placeholder = ''
