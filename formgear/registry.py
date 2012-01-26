@@ -2,6 +2,12 @@ class NotFoundException(Exception):
     pass
 
 class Registry(object):
+    class __metaclass__(type):
+        def __new__(cls, name, bases, attrs):
+            data = attrs.get('data', {})
+            attrs['data'] = data.copy()
+            return type.__new__(cls, name, bases, attrs)
+
     data = {}
 
     @classmethod
