@@ -135,8 +135,8 @@ class Widget(object):
         """
         # XXX: надо как-то пробрасывать сюда окружение, подробнее http://jinja.pocoo.org/docs/api/
         env = Environment(loader=FileSystemLoader(os.path.dirname(__file__)))
-        tmplt = env.get_template(self.template)
-        return tmplt.render(field=field, state=state, **kw)
+        tmplt = env.get_template('templates/widgets/widget.html')
+        return tmplt.render(template=self.template, field=field, state=state, kw=kw)
 
 class StringWidget(Widget):
     """

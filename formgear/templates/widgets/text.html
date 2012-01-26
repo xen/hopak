@@ -1,5 +1,3 @@
-text
-{#
 {%- macro view(field) %}
   <h3>{{ field.name }}</h3>
   <p>{{ field.value }}</p>
@@ -11,4 +9,3 @@ text
             {% if field.autofocus %}autofocus{% endif %}
             rows="4" cols="50">{{ field.value }}</textarea>
 {%- endmacro %}
-#}

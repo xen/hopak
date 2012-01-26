@@ -1,0 +1,8 @@
+
+{% import template as field_template %}
+{%- if state == 'view' %}
+  {{ field_template.view(field, **kw) }}
+{%- endif %}
+{% if state == 'edit' %}
+  {{ field_template.edit(field, **kw) }}
+{% endif %}
