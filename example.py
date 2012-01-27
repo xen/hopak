@@ -25,3 +25,6 @@ for field in order.form():
     print field('edit')
 
 print ModelRegistry.list()
+
+def test():
+    assert False
