@@ -108,7 +108,8 @@ class Widget(object):
         """ Here is should be field rendering
         """
         if not env:
-            env = Environment(loader=FileSystemLoader(os.path.dirname(__file__)))
+            path = os.path.join(os.path.dirname(__file__), 'templates')
+            env = Environment(loader=FileSystemLoader(path))
         tmplt = env.get_template(self.template)
         macro = getattr(tmplt.module, state, None)
         if not macro:
