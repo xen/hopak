@@ -80,6 +80,7 @@ class BaseField(object):
             self.widget = widget
 
         self.__dict__.update(kw)
+        self.value = None
 
     def validate(self, value):
         """Perform validation on a value.

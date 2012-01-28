@@ -58,9 +58,7 @@ class MetaModel(type):
         for fname, ffunc in fields:
             setattr(newbornclass, fname, ffunc)
 
-        newbornclass._fields = [
-            ffunc for _fname, ffunc in fields
-        ]
+        newbornclass._fields = fields
 
         newbornclass.forms = forms
 
@@ -76,8 +74,21 @@ class Model(object):
     class Meta:
         abstract = True
 
+    def __init__(self, **kw):
+        fields = dict(self._fields)
+        for name, val in kw.items():
+            if name not in fields:
+                raise TypeError("%r has no field %r" % (self, name))
+
+            field = getattr(self, name)
+            field.value = val
+
+    def items(self):
+        for name, field in self._fields:
+            yield name, field.value
+
     def __iter__(self):
-        return iter(self._fields)
+        return self.items()
 
     def __getitem__(self, name):
         """Attrubute-style field and forms access.
