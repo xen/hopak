@@ -119,3 +119,10 @@ class Model(object):
 
     def validate(self):
         return True
+
+    def to_mongo(self):
+        return dict(self.items())
+
+    def save(self):
+        import mongo
+        mongo.save(self.__class__.__name__, self.to_mongo())
