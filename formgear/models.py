@@ -74,8 +74,11 @@ class Model(object):
     class Meta:
         abstract = True
 
-    def __init__(self, **kw):
+    def __init__(self, data=None, **kw):
         fields = dict(self._fields)
+        assert data is None or not kw, 'Pass data in one way'
+        if data:
+            kw = data
         for name, val in kw.items():
             if name not in fields:
                 raise TypeError("%r has no field %r" % (self, name))
@@ -88,7 +91,8 @@ class Model(object):
             yield name, field.value
 
     def __iter__(self):
-        return self.items()
+        for name, field in self._fields:
+            yield name, field
 
     def __getitem__(self, name):
         """Attrubute-style field and forms access.
@@ -112,3 +116,6 @@ class Model(object):
             raise NotImplementedError
         else:
             return self._fields
+
+    def validate(self):
+        return True

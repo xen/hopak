@@ -1,11 +1,12 @@
-{%- macro view(field) %}
-  <h3>{{ field.name }}</h3>
+{%- macro view(field, name) %}
+  <h3>{{ name }}</h3>
   <p>{{ field.value }}</p>
 {%- endmacro %}
 
-{%- macro edit(field) %}
-  <textarea name="{{ field.name }}" placeholder="{{ field.placeholder }}"
+{%- macro edit(field, name) %}
+  <h3>{{field.title}}</h3>
+  <textarea name="{{ name }}" placeholder="{{ field.placeholder }}"
             {% if field.required %}required{% endif %}
             {% if field.autofocus %}autofocus{% endif %}
-            rows="4" cols="50">{{ field.value }}</textarea>
+            rows="4" cols="50">{{ field.value or field.empty }}</textarea>
 {%- endmacro %}

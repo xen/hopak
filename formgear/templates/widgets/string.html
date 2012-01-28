@@ -1,10 +1,10 @@
- {%- macro view(field) %}
-  <h3>{{ field.name }}</h3>
+ {%- macro view(field, name) %}
+  <h3>{{ name }}</h3>
   <p>{{ field.value }}</p>
 {%- endmacro %}
 
-{%- macro edit(field) %}
-  <input name="{{ field.name }}" type="{{ field.type }}"
+{%- macro edit(field, name) %}
+  <input name="{{ name }}" type="{{ field.type }}"
          value="{{ field.value }}" {% if field.required %}required{% endif %}
          placeholder="{{ field.placeholder }}"
          {% if field.pattern %}pattern="{{ field.pattern }}"{% endif %}
