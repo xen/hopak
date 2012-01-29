@@ -12,5 +12,8 @@ setup(name='formgear',
       # more examples here http://docs.python.org/distutils/examples.html#pure-python-distribution-by-package
       packages=['formgear', ],
       license = "BSD",
-      #depends = ['mongoengine', 'WTForms'],
+      install_requires=[
+          'jinja2',
+          'python-dateutil == 1.5',
+      ],
      )
