@@ -4,8 +4,9 @@
 {%- endmacro %}
 
 {%- macro edit(field, name) %}
+  {{ field.title }}
   <input name="{{ name }}" type="{{ field.type }}"
-         value="{{ field.value }}" {% if field.required %}required{% endif %}
+         value="{{ field.value or field.empty }}" {% if field.required %}required{% endif %}
          placeholder="{{ field.placeholder }}"
          {% if field.pattern %}pattern="{{ field.pattern }}"{% endif %}
          {% if field.autofocus %}autofocus{% endif %}/>

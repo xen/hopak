@@ -47,22 +47,39 @@ class MetaModel(type):
 
         fields = []
         for field in cfg.pop('fields', []):
-            # extracts widget information
-            widget = field.pop('widget', 'text')
+            if 'name' not in field:
+                raise ParsingException("Oops, we found nameless field!")
 
-            if type(widget) == type({}):
-                wdgt = WidgetRegistry.resolve(widget.pop('type', 'text'))(**widget)
+            field_typ = field.pop('type', 'string')
+            field_class = FieldsRegistry.resolve(field_typ)
+
+            # extracts widget information
+            widget = field.pop('widget', field_class.widget)
+
+            if isinstance(widget, dict):
+                widget_typ = widget.pop('type', field_class.widget)
+                widget_kw = widget
             else:
-                wdgt = WidgetRegistry.resolve(widget)()
+                widget_typ = widget
+                widget_kw = {}
+
+            if isinstance(widget_typ, basestring):
+                widgt_class = WidgetRegistry.resolve(widget_typ)
+            else:
+                widgt_class = widget_typ
+
+            wdgt = widgt_class(**widget_kw)
             # actual work with fields
-            if field.has_key('name'):
-                f = FieldsRegistry.resolve(field.pop('type', 'string').lower())
-            else:
-                raise ParsingException
+
             # XXX: here is missed part with validators
-            fields.append((field.pop('name'), f(widget = wdgt, **field)))
+            fields.append((field.pop('name'), field_class(widget = wdgt, **field)))
 
         forms = {}
+        forms['default'] = [
+                fname
+                for fname, _field in fields
+                if hasattr(_field, 'title')
+        ]
         for form in cfg.pop('forms', []):
             forms[form['name']] = form['fields']
 
@@ -123,13 +140,18 @@ class Model(object):
     def __setitem__(self, name, value):
         raise NotImplementedError
 
-    def form(self, fields=[]):
+    def form(self, name='default', fields=[]):
         """ Renders form from model instance
         """
-        if fields:
-            raise NotImplementedError
-        else:
-            return self._fields
+        if not fields and name in self.forms:
+            fields = self.forms[name]
+
+        fdict = dict(self._fields)
+
+        return [
+                (name, fdict[name])
+                for name in fields
+        ]
 
     def validate(self):
         return True

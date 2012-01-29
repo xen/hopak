@@ -41,7 +41,7 @@ class BaseField(object):
     # Fields may have _types inserted into indexes by default
     _index_with_types = True
     _geo_index = False
-    widget = widgets.StringWidget()
+    widget = widgets.StringWidget
 
     def __init__(self, db_field=None, required=False, default=None,
                  unique=False, unique_with=None, primary_key=False,

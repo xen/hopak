@@ -137,7 +137,7 @@ class StringWidget(Widget):
 
     """
     name = 'stringwidget'
-    template = 'widgets/input.html'
+    template = 'widgets/string.html'
     size = None
     strip = True
     placeholder = ''
