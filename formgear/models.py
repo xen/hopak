@@ -157,7 +157,12 @@ class Model(object):
         return True
 
     def to_mongo(self):
-        return dict(self.items())
+
+        return dict([
+            (name, field.to_mongo)
+            for name,field in self._fields
+        ])
+
 
     def save(self):
         import mongo

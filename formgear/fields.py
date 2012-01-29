@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
-import itertools
-#from mongoengine.base import BaseField as MongoField
 
 import datetime, re
-
 
 import controllers
 import widgets
@@ -106,6 +103,33 @@ class BaseField(object):
     def __call__(self, state="view", **kwargs):
         return self.widget.render(self, state, **kwargs)
 
+    def set_value(self, val):
+        self._value = val
+
+    def get_value(self):
+        val = self._value or self.default
+
+        if val:
+            short, _val = self.shortcut(val)
+            if short:
+                val = _val
+
+        return val
+
+    value = property(get_value, set_value)
+
+    def shortcut(self, value):
+        return False, None
+
+    @property
+    def to_mongo(self):
+        if hasattr(self, '__mongo__'):
+            val = self.__mongo__(self.value)
+        else:
+            val = self.value
+
+        return val
+
 class StringField(BaseField):
     """ Simple string
     """
@@ -144,6 +168,15 @@ class DateField(BaseField):
 class DateTimeField(BaseField):
 
     alter_names = ('datetime',)
+
+    def shortcut(self, value):
+        if value == 'now':
+            return True, datetime.datetime.now()
+        elif value == 'today':
+            return True, datetime.datetime.today()
+
+        return False, None
+
 
 class TimeField(BaseField):
     alter_names = ('time', )
