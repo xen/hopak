@@ -7,13 +7,13 @@ from formgear.models import Model, ModelRegistry
 from mongoengine import Document, StringField
 
 class User(Model):
-    __yaml__ = 'test/data/doctype.yaml'
+    __yaml__ = 'doctype'
 
 john = User()
 
 
 class Order(Model):
-    __yaml__ = 'test/sample/order.yaml'
+    __yaml__ = 'order'
 
 class MOrder(Document):
     title = StringField()
@@ -25,6 +25,3 @@ for field in order.form():
     print field('edit')
 
 print ModelRegistry.list()
-
-def test():
-    assert False
