@@ -1,19 +1,16 @@
 # -*- coding: utf-8 -*-
 #
 from __future__ import print_function
+import os
+import yaml
 
-__author__ = 'xen'
-
-
-from functools import partial
 from formgear.fields import FieldsRegistry
 from formgear.widgets import WidgetRegistry
 from registry import Registry
 from formgear.exceptions import *
 from formgear.utils import yamls_files
-import logging
-import yaml
 
+__author__ = 'xen'
 
 yamlsfiles = yamls_files()
 
@@ -34,17 +31,18 @@ class MetaModel(type):
         cfg = {}
         # we have search __yaml__ attribute only, when we 
         # have initialize a subclass of formgear.models.Model
-        if registername != 'model':
+        if not abstract:
 
             if not attrs.has_key('__yaml__'):
                 raise YamlAttributeNotFoundException
 
-            if not attrs['__yaml__'] in yamlsfiles:
+            ypath = attrs['__yaml__']
+
+            ypath = yamlsfiles.get(ypath, ypath)
+            if not os.access(ypath, 0):
                 raise YamlEntryNotFoundInListException
 
-            attrs['__yaml__'] = yamlsfiles[attrs['__yaml__']]
-
-            cfg = yaml.safe_load(open(attrs['__yaml__']))
+            cfg = yaml.safe_load(open(ypath))
 
 
         fields = []
