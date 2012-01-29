@@ -154,6 +154,14 @@ class Model(object):
         ]
 
     def validate(self):
+        for name, field in self._fields:
+            if not hasattr(field, 'validate'):
+                continue
+
+            valid = field.validate()
+            if not valid:
+                return
+
         return True
 
     def to_mongo(self):

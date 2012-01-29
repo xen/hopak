@@ -79,10 +79,10 @@ class BaseField(object):
         self.__dict__.update(kw)
         self.value = None
 
-    def validate(self, value):
+    def validate(self):
         """Perform validation on a value.
         """
-        pass
+        return True
 
     def translate(self, msgid):
         """ Use the translator passed to the renderer of this field to
@@ -168,6 +168,7 @@ class DateField(BaseField):
 class DateTimeField(BaseField):
 
     alter_names = ('datetime',)
+    type = 'date'
 
     def shortcut(self, value):
         if value == 'now':
@@ -176,6 +177,18 @@ class DateTimeField(BaseField):
             return True, datetime.datetime.today()
 
         return False, None
+
+    def validate(self):
+        if isinstance(self.value, datetime.datetime):
+            return True
+
+        from dateutil import parser
+        try:
+            self.value = parser.parse(self.value)
+        except ValueError:
+            return
+
+        return True
 
 
 class TimeField(BaseField):
@@ -189,6 +202,7 @@ class BooleanField(BaseField):
 
 class EmailField(BaseField):
     alter_names = ('email', )
+    type = 'email'
 
 class FloatField(BaseField):
     alter_names = ('float', )
