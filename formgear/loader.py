@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import os
 import models
 
 def _load(name):
-    prefix = './forms/' # XXX hardcoded
-    path = os.path.join(prefix, name+'.yaml')
     o = models.MetaModel(name, (models.Model,),
-            {'__yaml__': path}
+            {'__yaml__': name}
     )
 
     return o
