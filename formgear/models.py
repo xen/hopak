@@ -33,10 +33,7 @@ class MetaModel(type):
         # have initialize a subclass of formgear.models.Model
         if not abstract:
 
-            if not attrs.has_key('__yaml__'):
-                raise YamlAttributeNotFoundException
-
-            ypath = attrs['__yaml__']
+            ypath = attrs.get('__yaml__') or name.lower()
 
             ypath = yamlsfiles.get(ypath, ypath)
             if not os.access(ypath, 0):
@@ -122,8 +119,7 @@ class Model(object):
             yield name, field.value
 
     def __iter__(self):
-        for name, field in self._fields:
-            yield name, field
+        return iter(self.form())
 
     def __getitem__(self, name):
         """Attrubute-style field and forms access.
@@ -233,8 +229,11 @@ class Model(object):
         return cls.all().count()
 
     @classmethod
-    def get(cls, key):
-        data = list(cls.all(_id=key)[:1])
+    def get(cls, key=None, **kw):
+        if not kw and key:
+            kw = {"_id": key}
+
+        data = list(cls.all(**kw)[:1])
         if not data:
             return
 
