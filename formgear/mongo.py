@@ -13,4 +13,4 @@ def save(collection, data):
 def find(collection, **kw):
     col = db[collection]
 
-    return col.find()
+    return col.find(kw)

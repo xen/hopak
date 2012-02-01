@@ -220,9 +220,9 @@ class Model(object):
         mongo.save(self.kind(), self.to_mongo())
 
     @classmethod
-    def all(cls):
+    def all(cls, **kw):
         import mongo
-        return mongo.find(cls.kind())
+        return mongo.find(cls.kind(), **kw)
 
     @classmethod
     def kind(cls):
@@ -231,3 +231,11 @@ class Model(object):
     @classmethod
     def count(cls):
         return cls.all().count()
+
+    @classmethod
+    def get(cls, key):
+        data = list(cls.all(_id=key)[:1])
+        if not data:
+            return
+
+        return cls(**data[0])
