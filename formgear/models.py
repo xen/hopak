@@ -112,7 +112,7 @@ class Model(object):
             kw = data
         for name, val in kw.items():
             if name not in fields:
-                raise TypeError("%r has no field %r" % (self, name))
+                continue
 
             field = getattr(self, name)
             field.value = val
@@ -166,11 +166,54 @@ class Model(object):
 
     def to_mongo(self):
 
-        return dict([
+        doc = dict([
             (name, field.to_mongo)
             for name,field in self._fields
         ])
 
+        if '_id' in doc:
+            pass
+        elif hasattr(self, '_id'):
+            doc['_id'] = self._id
+        elif hasattr(self, 'key'):
+            _id = self.key()
+            if not (_id is None):
+                doc['_id'] = _id
+
+        return doc
+
+    def key(self):
+        if not hasattr(self.__class__, '__key__'):
+            return
+
+        if isinstance(self.__key__, (list, tuple)):
+            if self.__key__[0] == '_id':
+                import pymongo
+                names = self.__key__[1:]
+                vals = [
+                        unicode(pymongo.objectid.ObjectId())
+                ]
+            else:
+                names = self.__key__
+                vals = []
+
+            vals.extend([
+                getattr(self, fieldname).value
+                for fieldname in names
+            ])
+            assert None not in vals, "Field must have value \
+                    if specified in __key__"
+
+            return unicode.join(u"::", vals)
+
+        elif isinstance(self.__key__, basestring):
+            return getattr(self, self.__key__).value
+        elif callable(self.__key__):
+            return self.__key__()
+        elif hasattr(self.__class__.__key__, 'getter'):
+            return self.__key__
+
+        assert False, "Who is Mr. __key__?"
 
     def save(self):
         import mongo
