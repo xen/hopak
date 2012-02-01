@@ -174,4 +174,17 @@ class Model(object):
 
     def save(self):
         import mongo
-        mongo.save(self.__class__.__name__, self.to_mongo())
+        mongo.save(self.kind(), self.to_mongo())
+
+    @classmethod
+    def all(cls):
+        import mongo
+        return mongo.find(cls.kind())
+
+    @classmethod
+    def kind(cls):
+        return getattr(cls, '__yaml__', None) or cls.__name__
+
+    @classmethod
+    def count(cls):
+        return cls.all().count()
