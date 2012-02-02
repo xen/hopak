@@ -92,12 +92,12 @@ class Widget(object):
         return macro(field=field, **kw)
 
 
-class InputWidget(Widget):
+class StringWidget(Widget):
     """
     InputWidget <input type="text"/>
     """
-    alter_names = ('input',)
-    template = 'input' # We will try to find text.html template in widgets directory
+    alter_names = ('string',)
+    template = 'string' # We will try to find text.html template in widgets directory
 
 
 class TextWidget(Widget):
