@@ -36,7 +36,7 @@ def yamls_files():
     return yaml_list
 
 
-def widget_path_list(widget_path_list, dirname, names):
+def find_widget_template(widget_path_list, dirname, names):
     if os.path.isdir(dirname) and dirname.endswith("widgets"):
         widget_path_list.append(dirname)
 
