@@ -117,6 +117,21 @@ class Widget(object):
 
         return macro(field=field, **kw)
 
+# html5 input fields, support status here http://www.w3schools.com/html5/html5_form_input_types.asp 
+# color
+# date
+# datetime
+# datetime-local
+# email
+# month
+# number
+# range
+# search
+# tel
+# time
+# url
+# week
+
 class StringWidget(Widget):
     """
     Текстовый виджет. Служит для создания поля в формате <input type="{{type}}" />.
