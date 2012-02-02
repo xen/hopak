@@ -4,8 +4,8 @@
 {%- endmacro %}
 
 {%- macro edit(field, name) %}
-  <h3>{{field.title}}</h3>
-  <textarea name="{{ name }}" placeholder="{{ field.placeholder }}"
+  <label for="form_{{ name }}_id"><h3>{{ field.title }}</h3></label>
+  <textarea name="{{ name }}" placeholder="{{ field.placeholder }}" id="form_{{ name }}_id"
             {% if field.required %}required{% endif %}
             {% if field.autofocus %}autofocus{% endif %}
             rows="4" cols="50">{{ field.value or field.empty }}</textarea>

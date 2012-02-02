@@ -33,6 +33,8 @@ class MetaModel(type):
         # have initialize a subclass of formgear.models.Model
         if not abstract:
 
+            # try to find out by __yaml__ or by class name
+            # __yaml__ = "order" or class Order(Models):
             ypath = attrs.get('__yaml__') or name.lower()
 
             ypath = yamlsfiles.get(ypath, ypath)
@@ -41,6 +43,7 @@ class MetaModel(type):
 
             cfg = yaml.safe_load(open(ypath))
 
+            attrs["__yaml__"] = ypath
 
         fields = []
         for field in cfg.pop('fields', []):

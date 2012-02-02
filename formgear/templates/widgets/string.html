@@ -4,8 +4,8 @@
 {%- endmacro %}
 
 {%- macro edit(field, name) %}
-  {{ field.title }}
-  <input name="{{ name }}" type="{{ field.type }}"
+  <label for="form_{{ name }}_id">{{ field.title }}</label>
+  <input name="{{ name }}" type="{{ field.type }}" id="form_{{ name }}_id" class="customizable"
          value="{{ field.value or field.empty }}" {% if field.required %}required{% endif %}
          placeholder="{{ field.placeholder }}"
          {% if field.pattern %}pattern="{{ field.pattern }}"{% endif %}
