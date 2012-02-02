@@ -5,12 +5,18 @@ import os
 
 from jinja2 import Environment, FileSystemLoader
 from registry import Registry
+from utils import widgets_path
+
+
+widgets_path = widgets_path()
 
 class NotFoundWidgetException(Exception):
     pass
 
+
 class WidgetRegistry(Registry):
     NotFound = NotFoundWidgetException
+
 
 class MetaWidget(type):
     """
@@ -40,19 +46,8 @@ class Widget(object):
 
     Виджеты имеют следующие аттрибуты:
 
-    ? hidden
+    hidden
        виджет не отображается в форме
-
-    error_class
-       CSS класс для отображения ошибки
-       По умолчанию "error"
-
-    css_class
-       CSS класс для обображения контейнера виджета
-
-    resourcess
-       дополнительные media файлы которые требуется подключить для отображения
-       этого виджета в админке, словарь
 
     name
       удобное имя для виджета, по умолчанию подставляется имя класса
@@ -73,10 +68,10 @@ class Widget(object):
     """
     __metaclass__ = MetaWidget
 
-    # hidden = False
+    hidden = False
     error_class = 'error'
-    css_class = None
-    requirements = ()
+    css = None
+    value = ""    
 
     class Meta:
         abstract = True
@@ -84,94 +79,30 @@ class Widget(object):
     def __init__(self, **kw):
         self.__dict__.update(kw)
 
-    def serialize(self, field, value, state='edit'):
-        """
-        Параметры:
-
-        field
-          объект поля контент класса
-
-        value
-          значение поля, передается в шаблон
-
-        state
-          какой макрос шаблона будет вызван для отображения в HTML
-        """
-        raise NotImplementedError
-
-    def deserialize(self, field, pstruct):
-        """
-        """
-        raise NotImplementedError
-
     def render(self, field, state, env=None, **kw):
         """ Here is should be field rendering
         """
         if not env:
-            path = os.path.join(os.path.dirname(__file__), 'templates')
-            env = Environment(loader=FileSystemLoader(path))
-        tmplt = env.get_template(self.template)
+            env = Environment(loader=FileSystemLoader(widgets_path))
+        tmplt = env.get_template(self.template+".html")
         macro = getattr(tmplt.module, state, None)
         if not macro:
             return '' # XXX: output red text?
 
         return macro(field=field, **kw)
 
-class StringWidget(Widget):
+
+class InputWidget(Widget):
     """
-    Текстовый виджет. Служит для создания поля в формате <input type="{{type}}" />.
-
-    Получает аргументы:
-
-    size
-      Атрибут HTML поля size
-
-    tagtype
-      для поддержки HTML5 полей, по умолчанию text
-
-    strip
-      для обрезания пробелов до и после текста, по умолчанию True
-
-    placeholder
-      HTML5 атрибут placeholder, по умолчанию пусто
-
+    InputWidget <input type="text"/>
     """
-    name = 'stringwidget'
-    template = 'widgets/string.html'
-    size = None
-    strip = True
-    placeholder = ''
-    tagtype = 'text'
-    alter_names = ('string', 'str', )
+    alter_names = ('input',)
+    template = 'input' # We will try to find text.html template in widgets directory
 
-    def serialize(self, field, cstruct, state):
-        if not cstruct:
-            cstruct = ''
-        return field.renderer(self.template, field=field, cstruct=cstruct, state=state)
-
-    def deserialize(self, field, pstruct):
-        if not pstruct:
-            return None
-        if self.strip:
-            pstruct = pstruct.strip()
-        if not pstruct:
-            return None
-        return pstruct
 
 class TextWidget(Widget):
-    alter_names = ('text', 'textarea', )
-    template = 'widgets/text.html'
-
-class WYSIWYGWidget(Widget):
-    name = 'wysiwyg'
-    template = 'widgets/wysiwyg.html'
-    size = None
-    strip = False
-    placeholder = ''
-
-    def serialize(self, field, cstruct, state):
-        raise NotImplemented
-
-    def deserialize(self, field, pstruct):
-        raise NotImplemented
-
+    """
+    TextWidget <textarea />
+    """
+    alter_names = ('text',)
+    templates = 'text'

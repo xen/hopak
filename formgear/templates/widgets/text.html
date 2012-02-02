@@ -4,9 +4,13 @@
 {%- endmacro %}
 
 {%- macro edit(field, name) %}
-  <label for="form_{{ name }}_id"><h3>{{ field.title }}</h3></label>
-  <textarea name="{{ name }}" placeholder="{{ field.placeholder }}" id="form_{{ name }}_id"
+<div class="control-group">
+    <label for="form_{{ name }}_id"><h3>{{ field.title }}</h3></label>
+    <div class="controls">
+    	<textarea name="{{ name }}" placeholder="{{ field.placeholder }}" id="form_{{ name }}_id"
             {% if field.required %}required{% endif %}
             {% if field.autofocus %}autofocus{% endif %}
             rows="4" cols="50">{{ field.value or field.empty }}</textarea>
+    </div>
+</div>
 {%- endmacro %}
