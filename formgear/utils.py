@@ -35,3 +35,16 @@ def yamls_files():
     logging.info("obtained yaml files %r" % (yaml_list,))
     return yaml_list
 
+
+def find_widget_template(widget_path_list, dirname, names):
+    if os.path.isdir(dirname) and dirname.endswith("widgets"):
+        widget_path_list.append(dirname)
+
+
+def widgets_path():
+
+    widget_path_list = []
+    for cur_path in sys.path:
+        os.path.walk(cur_path, find_widget_template, widget_path_list)
+
+    return widget_path_list

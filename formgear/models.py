@@ -33,10 +33,9 @@ class MetaModel(type):
         # have initialize a subclass of formgear.models.Model
         if not abstract:
 
-            if not attrs.has_key('__yaml__'):
-                raise YamlAttributeNotFoundException
-
-            ypath = attrs['__yaml__']
+            # try to find out by __yaml__ or by class name
+            # __yaml__ = "order" or class Order(Models):
+            ypath = attrs.get('__yaml__') or name.lower()
 
             ypath = yamlsfiles.get(ypath, ypath)
             if not os.access(ypath, 0):
@@ -44,6 +43,7 @@ class MetaModel(type):
 
             cfg = yaml.safe_load(open(ypath))
 
+            attrs["__yaml__"] = ypath
 
         fields = []
         for field in cfg.pop('fields', []):
@@ -112,7 +112,7 @@ class Model(object):
             kw = data
         for name, val in kw.items():
             if name not in fields:
-                raise TypeError("%r has no field %r" % (self, name))
+                continue
 
             field = getattr(self, name)
             field.value = val
@@ -122,8 +122,7 @@ class Model(object):
             yield name, field.value
 
     def __iter__(self):
-        for name, field in self._fields:
-            yield name, field
+        return iter(self.form())
 
     def __getitem__(self, name):
         """Attrubute-style field and forms access.
@@ -166,12 +165,79 @@ class Model(object):
 
     def to_mongo(self):
 
-        return dict([
+        doc = dict([
             (name, field.to_mongo)
             for name,field in self._fields
         ])
 
+        if '_id' in doc:
+            pass
+        elif hasattr(self, '_id'):
+            doc['_id'] = self._id
+        elif hasattr(self, 'key'):
+            _id = self.key()
+            if not (_id is None):
+                doc['_id'] = _id
+
+        return doc
+
+    def key(self):
+        if not hasattr(self.__class__, '__key__'):
+            return
+
+        if isinstance(self.__key__, (list, tuple)):
+            if self.__key__[0] == '_id':
+                import pymongo
+                names = self.__key__[1:]
+                vals = [
+                        unicode(pymongo.objectid.ObjectId())
+                ]
+            else:
+                names = self.__key__
+                vals = []
+
+            vals.extend([
+                getattr(self, fieldname).value
+                for fieldname in names
+            ])
+            assert None not in vals, "Field must have value \
+                    if specified in __key__"
+
+            return unicode.join(u"::", vals)
+
+        elif isinstance(self.__key__, basestring):
+            return getattr(self, self.__key__).value
+        elif callable(self.__key__):
+            return self.__key__()
+        elif hasattr(self.__class__.__key__, 'getter'):
+            return self.__key__
+
+        assert False, "Who is Mr. __key__?"
 
     def save(self):
         import mongo
-        mongo.save(self.__class__.__name__, self.to_mongo())
+        mongo.save(self.kind(), self.to_mongo())
+
+    @classmethod
+    def all(cls, **kw):
+        import mongo
+        return mongo.find(cls.kind(), **kw)
+
+    @classmethod
+    def kind(cls):
+        return getattr(cls, '__yaml__', None) or cls.__name__
+
+    @classmethod
+    def count(cls):
+        return cls.all().count()
+
+    @classmethod
+    def get(cls, key=None, **kw):
+        if not kw and key:
+            kw = {"_id": key}
+
+        data = list(cls.all(**kw)[:1])
+        if not data:
+            return
+
+        return cls(**data[0])

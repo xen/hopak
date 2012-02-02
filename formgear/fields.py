@@ -100,6 +100,11 @@ class BaseField(object):
             id(self)
             )
 
+    def __unicode__(self):
+        return unicode(self.value)
+
+    __str__ = __unicode__
+
     def __call__(self, state="view", **kwargs):
         return self.widget.render(self, state, **kwargs)
 

@@ -4,10 +4,14 @@
 {%- endmacro %}
 
 {%- macro edit(field, name) %}
-  {{ field.title }}
-  <input name="{{ name }}" type="{{ field.type }}"
-         value="{{ field.value or field.empty }}" {% if field.required %}required{% endif %}
+<div class="control-group">
+    <label for="form_{{ name }}_id">{{ field.title }}</label>
+    <div class="controls">
+    <input name="{{ name }}" type="{{ field.type }}" id="form_{{ name }}_id"
+         value="{{ field.value }}" {% if field.required %}required{% endif %}
          placeholder="{{ field.placeholder }}"
          {% if field.pattern %}pattern="{{ field.pattern }}"{% endif %}
          {% if field.autofocus %}autofocus{% endif %}/>
+    </input>
+</div>
 {%- endmacro %}
