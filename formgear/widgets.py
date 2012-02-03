@@ -8,7 +8,8 @@ from registry import Registry
 from utils import widgets_path
 
 
-widgets_path = widgets_path()
+widgetspath = widgets_path()
+
 
 class NotFoundWidgetException(Exception):
     pass
@@ -83,7 +84,7 @@ class Widget(object):
         """ Here is should be field rendering
         """
         if not env:
-            env = Environment(loader=FileSystemLoader(widgets_path))
+            env = Environment(loader=FileSystemLoader(widgetspath))
         tmplt = env.get_template(self.template+".html")
         macro = getattr(tmplt.module, state, None)
         if not macro:
@@ -119,4 +120,4 @@ class TextWidget(Widget):
     TextWidget <textarea />
     """
     alter_names = ('text',)
-    templates = 'text'
+    template = 'text'
