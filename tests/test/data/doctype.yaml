@@ -17,9 +17,6 @@ fields:
     widget: text
   - name: body
     type: text
-    widget:
-      type: wysiwyg
-      skin: simple
   - name: Author
     type: string
 
