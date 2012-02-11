@@ -72,7 +72,7 @@ class Widget(object):
     hidden = False
     error_class = 'error'
     css = None
-    value = ""    
+    value = ""
 
     class Meta:
         abstract = True
@@ -92,7 +92,7 @@ class Widget(object):
 
         return macro(field=field, **kw)
 
-# html5 input fields, support status here http://www.w3schools.com/html5/html5_form_input_types.asp 
+# html5 input fields, support status here http://www.w3schools.com/html5/html5_form_input_types.asp
 # color
 # date
 # datetime
@@ -121,3 +121,10 @@ class TextWidget(Widget):
     """
     alter_names = ('text',)
     template = 'text'
+
+class PasswordWidget(Widget):
+    """
+    PasswordWidget <input type="password" />
+    """
+    alter_names = ('string',)
+    template = 'string' # We will try to find text.html template in widgets directory
