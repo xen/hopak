@@ -8,7 +8,7 @@
     <label for="form_{{ name }}_id">{{ field.title }}</label>
     <div class="controls">
     <input name="{{ name }}" type="{{ field.type }}" id="form_{{ name }}_id"
-         value="{{ field.value or '' }}" {% if field.required %}required{% endif %}
+         value="{{ field.value or field.empty }}" {% if field.required %}required{% endif %}
          placeholder="{{ field.placeholder }}"
          {% if field.pattern %}pattern="{{ field.pattern }}"{% endif %}
          {% if field.autofocus %}autofocus{% endif %} />
