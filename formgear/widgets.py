@@ -107,13 +107,21 @@ class Widget(object):
 # url
 # week
 
+class DateWidget(Widget):
+    """
+    DateWidget
+    """
+    template = 'string'
+    alter_names = ('date',)
+
+
 class StringWidget(Widget):
     """
     InputWidget <input type="text"/>
     """
     alter_names = ('string',)
     template = 'string' # We will try to find text.html template in widgets directory
-
+    value = ""
 
 class TextWidget(Widget):
     """

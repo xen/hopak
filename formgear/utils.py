@@ -46,5 +46,5 @@ def widgets_path():
     widget_path_list = []
     for cur_path in sys.path:
         os.path.walk(cur_path, find_widget_template, widget_path_list)
-
+    print(widget_path_list)
     return widget_path_list
