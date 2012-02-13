@@ -122,8 +122,8 @@ class Model(object):
             field.value = kw[name]
 
     def items(self):
-        for field, field in self._fields:
-            yield name, field.value
+        for name, field in self._fields:
+            yield name, getattr(self, name).value
 
     def __iter__(self):
         return iter(self.form())
@@ -151,10 +151,8 @@ class Model(object):
             if form:
                 fields = form['fields']
 
-        fdict = dict(self._fields)
-
         return [
-                (name, fdict[name])
+                (name, getattr(self, name))
                 for name in fields
         ]
 
@@ -178,7 +176,7 @@ class Model(object):
     def to_mongo(self):
 
         doc = dict([
-            (name, field.to_mongo)
+            (name, getattr(self, name).to_mongo)
             for name,field in self._fields
         ])
 
@@ -237,7 +235,7 @@ class Model(object):
 
     @classmethod
     def kind(cls):
-        return getattr(cls, '__yaml__', None) or cls.__name__
+        return cls.__name__.lower()
 
     @classmethod
     def count(cls):
