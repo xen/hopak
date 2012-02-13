@@ -112,6 +112,12 @@ class Model(object):
         if data:
             kw = data
 
+        self.update(kw)
+
+    def update(self, data=None, **kw):
+        assert data is None or not kw, 'Pass data in one way'
+        kw = data or kw
+
         for name, field in self._fields:
             setattr(self, name, field.reinstance())
 
