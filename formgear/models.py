@@ -74,14 +74,16 @@ class MetaModel(type):
             # XXX: here is missed part with validators
             fields.append((field.pop('name'), field_class(widget = wdgt, **field)))
 
-        forms = {}
-        forms['default'] = [
+        forms = []
+        forms.append({
+            "name": "default",
+            "fields": [
                 fname
                 for fname, _field in fields
                 if hasattr(_field, 'title')
-        ]
-        for form in cfg.pop('forms', []):
-            forms[form['name']] = form['fields']
+            ],
+        })
+        forms.extend(cfg.pop('forms', []))
 
         cfg.update(attrs)
         newbornclass = super(MetaModel, cls).__new__(cls, name, bases, cfg)
@@ -120,7 +122,7 @@ class Model(object):
             field.value = kw[name]
 
     def items(self):
-        for name, field in self._fields:
+        for field, field in self._fields:
             yield name, field.value
 
     def __iter__(self):
@@ -144,8 +146,10 @@ class Model(object):
     def form(self, name='default', fields=[]):
         """ Renders form from model instance
         """
-        if not fields and name in self.forms:
-            fields = self.forms[name]
+        if not fields:
+            form = self.form_info(name)
+            if form:
+                fields = form['fields']
 
         fdict = dict(self._fields)
 
@@ -153,6 +157,12 @@ class Model(object):
                 (name, fdict[name])
                 for name in fields
         ]
+
+    @classmethod
+    def form_info(cls, name):
+        for form in cls.forms:
+            if form['name'] == name:
+                    return form
 
     def validate(self):
         for name, field in self._fields:
