@@ -107,10 +107,12 @@ class Model(object):
     class Meta:
         abstract = True
 
-    def __init__(self, data=None, **kw):
+    def __init__(self, _id=None, data=None, **kw):
         assert data is None or not kw, 'Pass data in one way'
         if data:
             kw = data
+        if _id:
+            self._id = _id
 
         self.update(kw)
 
@@ -169,7 +171,8 @@ class Model(object):
                     return form
 
     def validate(self):
-        for name, field in self._fields:
+        for name, __field in self._fields:
+            field = getattr(self, name)
             if not hasattr(field, 'validate'):
                 continue
 
