@@ -106,16 +106,18 @@ class Model(object):
         abstract = True
 
     def __init__(self, data=None, **kw):
-        fields = dict(self._fields)
         assert data is None or not kw, 'Pass data in one way'
         if data:
             kw = data
-        for name, val in kw.items():
-            if name not in fields:
+
+        for name, field in self._fields:
+            setattr(self, name, field.reinstance())
+
+            if name not in kw:
                 continue
 
             field = getattr(self, name)
-            field.value = val
+            field.value = kw[name]
 
     def items(self):
         for name, field in self._fields:

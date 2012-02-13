@@ -30,6 +30,13 @@ class MetaField(type):
 
         return newbornclass
 
+def init_partial(real):
+    def init_partial(self, *a, **kw):
+        self._partial = a, kw
+        return real(self, *a, **kw)
+
+    return init_partial
+
 class BaseField(object):
     """ BaseField is very similar to MongoEngine fields.
     """
@@ -40,6 +47,7 @@ class BaseField(object):
     _geo_index = False
     widget = widgets.StringWidget
 
+    @init_partial
     def __init__(self, db_field=None, required=False, default=None,
                  unique=False, unique_with=None, primary_key=False,
                  validators=[], widget=None, **kw):
@@ -83,6 +91,10 @@ class BaseField(object):
         """Perform validation on a value.
         """
         return True
+
+    def reinstance(self):
+        a, kw = self._partial
+        return self.__class__(*a, **kw)
 
     def translate(self, msgid):
         """ Use the translator passed to the renderer of this field to
