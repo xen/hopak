@@ -29,7 +29,7 @@ class MetaModel(type):
         registername = attrs.pop('name', name.lower())
 
         cfg = {}
-        # we have search __yaml__ attribute only, when we 
+        # we have search __yaml__ attribute only, when we
         # have initialize a subclass of formgear.models.Model
         if not abstract:
 
@@ -260,3 +260,6 @@ class Model(object):
             return
 
         return cls(**data[0])
+
+    def render_form(self, state='edit'):
+        pass

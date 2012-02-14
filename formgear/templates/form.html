@@ -1,30 +1,43 @@
-{% macro render_form(form, state) -%}
+<!-- Система форм -->
 
-{% for field in form %}
-{{ row(field, state=state, **kwargs) }}
-{% endfor %}
-<input type="hidden" value="1" name="form.submitted">
+{%- macro render_form(form, action=None) -%}
+  {# XXX: Place for global form error.
+    {% if form.errors %}...{% endif %}
+  #}
+  {% for name, field in form %}
+  {{ row(field, name, **kwargs) }}
+  {% endfor %}
+  <input type="hidden" value="1" name="form.submitted">
+  {% if action %}
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">{{ action }}</button>
+    </div>
+  {% endif %}
 {%- endmacro %}
 
-{% macro row(field, state='view') -%}
-<div class="clearfix {% if field.errors %}error{% endif %}">
-  <label for="errorInput">{{ field.label }}</label>
-  <div class="input">
-    {{ field(state) }}
+{%- macro row(field, name) %}
+<div class="control-group {% if field.errors %}error{% endif %}">
+  <label for="{{field.name}}">{{ field.label }}</label>
+  <div class="controls">
+    <p>{{field | f(name=name)}}</p>
     {% if field.errors %}<span class="help-inline">{{ field.errors|join(', ') }}</span>{% endif %}
     {% if field.description %}<span class="help-block">{{ field.description }}</span>{% endif %}
   </div>
 </div>
 {%- endmacro %}
 
-{% macro table(field) -%}
-{# As table #}
-
-
+{%- macro render_search(form, url, action="Найти") %}
+  <div class="well">
+    <form action="{{ url }}" method="GET">
+      {% for field in form %}
+        {{ row_search(field, **kwargs) }}
+        <div class="pull-left">&nbsp;</div>
+      {% endfor %}
+      <button class="btn btn-primary pull-right" type="submit" class="btn">{{ action }}</button>
+    </form>
+  </div>
 {%- endmacro %}
 
-{% macro search(field) -%}
-{# As table #}
-
-
+{%- macro row_search(field) %}
+  {{ field(class="pull-left", **kwargs)|safe }}
 {%- endmacro %}
