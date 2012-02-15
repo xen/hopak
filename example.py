@@ -15,13 +15,7 @@ john = User()
 class Order(Model):
     __yaml__ = 'order'
 
-class MOrder(Document):
-    title = StringField()
-
 
 order = Order()
-morder = MOrder(title='Mongo orderzottsdf')
-for field in order.form():
-    print field('edit')
 
-print ModelRegistry.list()
+print order.render_form()

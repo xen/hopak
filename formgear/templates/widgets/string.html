@@ -1,9 +1,9 @@
- {%- macro view(field, name) %}
+ {%- macro view(name, field) %}
   <h3>{{ name }}</h3>
   <p>{{ field.value }}</p>
 {%- endmacro %}
 
-{%- macro edit(field, name) %}
+{%- macro edit(name, field) %}
 <div class="control-group">
     <label for="form_{{ name }}_id">{{ field.title }}</label>
     <div class="controls">
@@ -12,6 +12,8 @@
          placeholder="{{ field.placeholder }}"
          {% if field.pattern %}pattern="{{ field.pattern }}"{% endif %}
          {% if field.autofocus %}autofocus{% endif %} />
+    {% if field.errors %}<span class="help-inline">{{ field.errors|join(', ') }}</span>{% endif %}
+    {% if field.description %}<span class="help-block">{{ field.description }}</span>{% endif %}
     </div>
 </div>
 {%- endmacro %}

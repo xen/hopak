@@ -1,11 +1,8 @@
 <!-- Система форм -->
 
-{%- macro render_form(form, action=None) -%}
-  {# XXX: Place for global form error.
-    {% if form.errors %}...{% endif %}
-  #}
+{%- macro edit(form, action=None) -%}
   {% for name, field in form %}
-  {{ row(field, name, **kwargs) }}
+    {{ field(name = name, state='edit') }}
   {% endfor %}
   <input type="hidden" value="1" name="form.submitted">
   {% if action %}
@@ -13,18 +10,7 @@
       <button type="submit" class="btn btn-primary">{{ action }}</button>
     </div>
   {% endif %}
-{%- endmacro %}
-
-{%- macro row(field, name) %}
-<div class="control-group {% if field.errors %}error{% endif %}">
-  <label for="{{field.name}}">{{ field.label }}</label>
-  <div class="controls">
-    <p>{{field | f(name=name)}}</p>
-    {% if field.errors %}<span class="help-inline">{{ field.errors|join(', ') }}</span>{% endif %}
-    {% if field.description %}<span class="help-block">{{ field.description }}</span>{% endif %}
-  </div>
-</div>
-{%- endmacro %}
+{%- endmacro -%}
 
 {%- macro render_search(form, url, action="Найти") %}
   <div class="well">

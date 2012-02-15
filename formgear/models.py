@@ -10,6 +10,8 @@ from registry import Registry
 from formgear.exceptions import *
 from formgear.utils import yamls_files
 
+from jinja2 import Environment, PackageLoader
+
 __author__ = 'xen'
 
 yamlsfiles = yamls_files()
@@ -261,5 +263,10 @@ class Model(object):
 
         return cls(**data[0])
 
-    def render_form(self, state='edit'):
-        pass
+    def render_form(self, state='edit', form='default', env=None):
+        """ Render form
+        """
+        env = Environment(loader=PackageLoader('formgear'))
+        template = env.get_template('form.html')
+        m = getattr(template.module, state, None)
+        return m(form = self.form(form))
