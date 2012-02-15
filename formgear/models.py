@@ -77,6 +77,7 @@ class MetaModel(type):
             fields.append((field.pop('name'), field_class(widget = wdgt, **field)))
 
         forms = []
+        forms.extend(cfg.pop('forms', []))
         forms.append({
             "name": "default",
             "fields": [
@@ -85,7 +86,6 @@ class MetaModel(type):
                 if hasattr(_field, 'title')
             ],
         })
-        forms.extend(cfg.pop('forms', []))
 
         cfg.update(attrs)
         newbornclass = super(MetaModel, cls).__new__(cls, name, bases, cfg)
@@ -116,6 +116,15 @@ class Model(object):
         if _id:
             self._id = _id
 
+        fields = []
+        for name, _field in self._fields:
+            field = _field.reinstance()
+            fields.append((name, field))
+
+            setattr(self, name, field)
+
+        self._fields = fields
+
         self.update(kw)
 
     def update(self, data=None, **kw):
@@ -123,7 +132,6 @@ class Model(object):
         kw = data or kw
 
         for name, field in self._fields:
-            setattr(self, name, field.reinstance())
 
             if name not in kw:
                 continue
