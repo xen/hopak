@@ -140,7 +140,9 @@ class Model(object):
         cleared = []
         for name, val in kw:
 
-            field = getattr(self, name)
+            field = getattr(self, name, None)
+            if not field:
+                continue
 
             if name not in cleared:
                 field.clear()
