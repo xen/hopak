@@ -123,6 +123,7 @@ class StringWidget(Widget):
     template = 'string' # We will try to find text.html template in widgets directory
     value = ""
 
+
 class TextWidget(Widget):
     """
     TextWidget <textarea />
@@ -130,9 +131,18 @@ class TextWidget(Widget):
     alter_names = ('text',)
     template = 'text'
 
+
 class PasswordWidget(Widget):
     """
     PasswordWidget <input type="password" />
     """
     alter_names = ('string',)
-    template = 'string' # We will try to find text.html template in widgets directory
+    template = 'password' # We will try to find text.html template in widgets directory
+
+
+class CheckboxWidget(Widget):
+    """
+    CheckboxWidget <input type="checkbox" />
+    """
+    alter_names = ('checkbox',)
+    template = 'checkbox'

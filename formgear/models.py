@@ -8,7 +8,7 @@ from formgear.fields import FieldsRegistry
 from formgear.widgets import WidgetRegistry
 from registry import Registry
 from formgear.exceptions import *
-from formgear.utils import yamls_files
+from formgear.utils import yamls_files, file_resolve
 
 from jinja2 import Environment, PackageLoader
 
@@ -69,12 +69,16 @@ class MetaModel(type):
                 widgt_class = WidgetRegistry.resolve(widget_typ)
             else:
                 widgt_class = widget_typ
-
+            
             wdgt = widgt_class(**widget_kw)
-            # actual work with fields
 
+            file_resolve(field, "choices", ypath)
+
+            new_field = field_class(widget = wdgt, **field)
+
+            # actual work with fields
             # XXX: here is missed part with validators
-            fields.append((field.pop('name'), field_class(widget = wdgt, **field)))
+            fields.append((field.pop('name'), new_field))
 
         forms = []
         forms.extend(cfg.pop('forms', []))
