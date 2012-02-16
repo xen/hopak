@@ -73,7 +73,7 @@ class BaseField(object):
         self.unique_with = unique_with
         self.default = default
 
-        self.validators = validators
+        self.validators = validators[:]
         if controllers.Required in self.validators:
             self.required = True
         if required:
