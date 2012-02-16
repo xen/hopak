@@ -1,0 +1,17 @@
+{%- macro view(name, field) %}
+  <h3>{{ name }}</h3>
+  <p>{% if field.value %}<i class="icon-ok"></i>{% else %}<i class="icon-remove"></i>{% endif %}</p>
+{%- endmacro %}
+
+{%- macro edit(name, field) %}
+<div class="control-group {% if field.errors %}error{% endif %}">
+    <label for="form_{{ name }}_id">{{ field.title }}</label>
+    <div class="controls">
+      <label class="checkbox">
+        <input type="checkbox" id="form_{{ name }}_id" value="1" {% if field.value %}checked{% endif %}>
+      </label>
+      {% if field.errors %}<span class="help-inline">{{ field.errors|join(', ') }}</span>{% endif %}
+      {% if field.description %}<span class="help-block">{{ field.description }}</span>{% endif %}
+    </div>
+</div>
+{%- endmacro %}

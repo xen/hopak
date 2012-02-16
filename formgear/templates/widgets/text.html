@@ -1,16 +1,18 @@
-{%- macro view(field, name) %}
+{%- macro view(name, field) %}
   <h3>{{ name }}</h3>
-  <p>{{ field.value }}</p>
+  <p>{{ field.value }}</p> {# XXX: Processor filter here? #}
 {%- endmacro %}
 
-{%- macro edit(field, name) %}
-<div class="control-group">
-    <label for="form_{{ name }}_id"><h3>{{ field.title }}</h3></label>
+{%- macro edit(name, field) %}
+<div class="control-group {% if field.errors %}error{% endif %}">
+    <label for="form_{{ name }}_id">{{ field.title }}</label>
     <div class="controls">
-    	<textarea name="{{ name }}" placeholder="{{ field.placeholder }}" id="form_{{ name }}_id"
-            {% if field.required %}required{% endif %}
-            {% if field.autofocus %}autofocus{% endif %}
-            rows="4" cols="50">{{ field.value or field.empty }}</textarea>
+      <textarea name="{{ name }}" placeholder="{{ field.placeholder }}" id="form_{{ name }}_id"
+                  {% if field.required %}required{% endif %}
+                  {% if field.autofocus %}autofocus{% endif %}
+                  rows="4" cols="50">{{ field.value or field.empty }}</textarea>
+    {% if field.errors %}<span class="help-inline">{{ field.errors|join(', ') }}</span>{% endif %}
+    {% if field.description %}<span class="help-block">{{ field.description }}</span>{% endif %}
     </div>
 </div>
 {%- endmacro %}
