@@ -147,7 +147,7 @@ class BooleanWidget(Widget):
 class EmailWidget(Widget):
     """ Email input filed
     """
-    alter_names = ('email')
+    alter_names = ('email',)
     template = 'email'
 
 class CheckboxWidget(Widget):
