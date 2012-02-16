@@ -254,3 +254,4 @@ class GeoPointField(BaseField):
 class CheckboxField(BaseField):
     alter_names = ('checkbox',)
     choices = {}
+    widget = widgets.CheckboxWidget
