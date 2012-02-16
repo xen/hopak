@@ -5,7 +5,9 @@
         {% for key, val in field.choices %}
         <div class="controls">
         <input name="{{ name }}" type="checkbox" id="form_{{ name }}_id"
-             value="{{ key }}" /> {{ val }}
+            value="{{ key }}"
+            {% if key in field.value %}checked{% endif %}
+        /> {{ val }}
         {% if field.errors %}<span class="help-inline">{{ field.errors|join(', ') }}</span>{% endif %}
         {% if field.description %}<span class="help-block">{{ field.description }}</span>{% endif %}
         </div>

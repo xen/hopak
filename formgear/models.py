@@ -134,14 +134,19 @@ class Model(object):
     def update(self, data=None, **kw):
         assert data is None or not kw, 'Pass data in one way'
         kw = data or kw
+        if callable(getattr(kw, 'items', None)):
+            kw = kw.items()
 
-        for name, field in self._fields:
-
-            if name not in kw:
-                continue
+        cleared = []
+        for name, val in kw:
 
             field = getattr(self, name)
-            field.value = kw[name]
+
+            if name not in cleared:
+                field.clear()
+                cleared.append(name)
+
+            field.value = val
 
     def items(self):
         for name, field in self._fields:
