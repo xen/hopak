@@ -271,12 +271,12 @@ class Model(object):
 
         return cls(**data[0])
 
-    def render_form(self, env=None, state='edit', form='default'):
-        """ Render form
+    def render_form(self, env=None, state='edit', form='default', **kw):
+        """ Render form method
         """
         env = env or Environment(loader=PackageLoader('formgear'))
         template = env.get_template('form.html')
         m = getattr(template.module, state, None)
-        return m(form = self.form(form))
+        return m(form = self.form(form), **kw)
 
     render_form.environmentfunction = True
