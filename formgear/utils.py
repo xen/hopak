@@ -48,3 +48,25 @@ def widgets_path():
         os.path.walk(cur_path, find_widget_template, widget_path_list)
     print(widget_path_list)
     return widget_path_list
+
+
+def file_resolve(field, name, ypath):
+    choicesf = field.pop(name, None)
+
+    if choicesf is None:
+        return
+
+    if not (isinstance(choicesf, basestring) and \
+        choicesf.startswith("@")):
+        return
+
+    # try to open csv file
+    choices_file = open(os.path.join(os.path.dirname(ypath), choicesf[1:]))
+    choices = []
+    for line in choices_file:
+        line = line.decode("utf-8")
+        key, val = line.split(".")
+        choices.append((key, val))
+
+    field[name] = choices
+

@@ -250,3 +250,7 @@ class ImageField(BaseField):
 
 class GeoPointField(BaseField):
     alter_names = ('geo', 'geopoint', )
+
+class CheckboxField(BaseField):
+    alter_names = ('checkbox',)
+    choices = {}
