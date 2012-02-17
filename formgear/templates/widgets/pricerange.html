@@ -1,22 +1,28 @@
 {%- macro view(name, field) %}
   <h3>{{ name }}</h3>
-  <p>{{ field.value }}</p>
+  {% if field.value %}
+  <p>{{ field.value.from }} - {{ field.value.to }} {{field.value.currency}}</p>
+  {% else %}
+  <p>{{ field.empty }}</p>
+  {% endif %}
+
 {%- endmacro %}
 
 {%- macro edit(name, field) %}
 <div class="control-group {% if field.errors %}error{% endif %}">
     <label for="form_{{ name }}_id">{{ field.title }}</label>
     <input name="{{ name }}__from" type="text" id="form_{{ name }}_id"
-       value="{{ field.value or field.empty }}" {% if field.required %}required{% endif %}
+       value="{{ field.value.from or field.empty }}" {% if field.required %}required{% endif %}
        pattern="\d+(\.\d{2})?" placeholder="120.00" maxlength="6" /> - 
     <input name="{{ name }}__to" type="text" id="form_{{ name }}_id"
-       value="{{ field.value or field.empty }}" {% if field.required %}required{% endif %}
+       value="{{ field.value.to or field.empty }}" {% if field.required %}required{% endif %}
        pattern="\d+(\.\d{2})?" placeholder="240.00" maxlength="6" />
     <select name="{{ name }}__currency" type="text" id="form_{{ name }}_id">
       <option value=""> - </option>
-      <option value="UAH">грн.</option>
-      <option value="USD">дол.</option>
-      <option value="EUR">евро</option>
+      {% for currency, name in [['UAH', 'грн.'],['USD', 'дол.'], ['EUR', 'евро']] %}
+      <option {% if currency == field.value.currency %}selected{%endif%}
+      value="{{currency}}">{{name}}</option>
+      {% endfor %}
     </select>
     {% if field.errors %}<span class="help-inline">{{ field.errors|join(', ') }}</span>{% endif %}
     {% if field.description %}<span class="help-block">{{ field.description }}</span>{% endif %}
