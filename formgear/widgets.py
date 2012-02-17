@@ -162,3 +162,9 @@ class SelectWidget(Widget):
     """
     alter_names = ('select',)
     template = 'select'
+
+class ImageWidget(Widget):
+    """
+    http://blueimp.github.com/jQuery-File-Upload/
+    """
+    pass
