@@ -10,7 +10,7 @@
       {% if field.choices %}
       {% for key, val in field.choices %}
         <label class="checkbox">
-          <input name="{{ name }}" type="checkbox" id="form_{{ name }}_id"
+          <input name="{{ name }}" type="checkbox"
             value="{{ key }}" {% if key in field.value %}checked{% endif %} />
           {{ val }}
         </label>
