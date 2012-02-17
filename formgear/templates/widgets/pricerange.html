@@ -6,13 +6,19 @@
 {%- macro edit(name, field) %}
 <div class="control-group {% if field.errors %}error{% endif %}">
     <label for="form_{{ name }}_id">{{ field.title }}</label>
-    <div class="controls">
-    <input name="{{ name }}" type="text" id="form_{{ name }}_id"
+    <input name="{{ name }}__from" type="text" id="form_{{ name }}_id"
        value="{{ field.value or field.empty }}" {% if field.required %}required{% endif %}
-       {% if field.pattern %}pattern="{{ field.pattern }}"{% endif %}
-       {% if field.autofocus %}autofocus{% endif %} />
+       pattern="\d+(\.\d{2})?" placeholder="120.00" maxlength="6" /> - 
+    <input name="{{ name }}__to" type="text" id="form_{{ name }}_id"
+       value="{{ field.value or field.empty }}" {% if field.required %}required{% endif %}
+       pattern="\d+(\.\d{2})?" placeholder="240.00" maxlength="6" />
+    <select name="{{ name }}__currency" type="text" id="form_{{ name }}_id">
+      <option value=""> - </option>
+      <option value="UAH">грн.</option>
+      <option value="USD">дол.</option>
+      <option value="EUR">евро</option>
+    </select>
     {% if field.errors %}<span class="help-inline">{{ field.errors|join(', ') }}</span>{% endif %}
     {% if field.description %}<span class="help-block">{{ field.description }}</span>{% endif %}
-    </div>
 </div>
 {%- endmacro %}
