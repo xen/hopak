@@ -160,12 +160,12 @@ class CheckboxWidget(Widget):
 
 class PricerangeWidget(Widget):
     alter_names = ('pricerange',)
-    templates = 'pricerange'
+    template = 'pricerange'
 
 
 class TimerangeWidget(Widget):
     alter_names = ('timerange',)
-    templates = 'timerange'
+    template = 'timerange'
 
 
 class SelectWidget(Widget):

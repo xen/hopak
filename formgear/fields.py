@@ -253,13 +253,6 @@ class ImageField(BaseField):
 class GeoPointField(BaseField):
     alter_names = ('geo', 'geopoint', )
 
-class PricerangeField(BaseField):
-    alter_name = ('pricerange')
-    widget = widgets.PricerangeWidget
-
-    def __init__(self, **kwargs):
-        pass
-
 class TimerangeField(BaseField):
     alter_name = ('timerange')
     widget = widgets.TimerangeWidget
