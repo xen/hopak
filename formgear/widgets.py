@@ -146,3 +146,13 @@ class CheckboxWidget(Widget):
     """
     alter_names = ('checkbox',)
     template = 'checkbox'
+
+
+class PricerangeWidget(Widget):
+    alter_names = ('pricerange',)
+    templates = 'pricerange'
+
+
+class TimerangeWidget(Widget):
+    alter_names = ('timerange',)
+    templates = 'timerange'

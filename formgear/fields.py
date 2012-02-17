@@ -219,7 +219,6 @@ class BooleanField(BaseField):
 
 class EmailField(BaseField):
     alter_names = ('email', )
-    type = 'email'
 
 class FloatField(BaseField):
     alter_names = ('float', )
@@ -254,3 +253,15 @@ class GeoPointField(BaseField):
 class CheckboxField(BaseField):
     alter_names = ('checkbox',)
     choices = {}
+
+class PricerangeField(BaseField):
+    alter_name = ('pricerange')
+    widget = widgets.PricerangeWidget
+
+    def __init__(self, **kwargs):
+        pass
+
+class TimerangeField(BaseField):
+    alter_name = ('timerange')
+    widget = widgets.TimerangeWidget
+
