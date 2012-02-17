@@ -134,14 +134,21 @@ class Model(object):
     def update(self, data=None, **kw):
         assert data is None or not kw, 'Pass data in one way'
         kw = data or kw
+        if callable(getattr(kw, 'items', None)):
+            kw = kw.items()
 
-        for name, field in self._fields:
+        cleared = []
+        for name, val in kw:
 
-            if name not in kw:
+            field = getattr(self, name, None)
+            if not field:
                 continue
 
-            field = getattr(self, name)
-            field.value = kw[name]
+            if name not in cleared:
+                field.clear()
+                cleared.append(name)
+
+            field.value = val
 
     def items(self):
         for name, field in self._fields:
@@ -275,12 +282,12 @@ class Model(object):
 
         return cls(**data[0])
 
-    def render_form(self, env=None, state='edit', form='default'):
-        """ Render form
+    def render_form(self, env=None, state='edit', form='default', **kw):
+        """ Render form method
         """
         env = env or Environment(loader=PackageLoader('formgear'))
         template = env.get_template('form.html')
         m = getattr(template.module, state, None)
-        return m(form = self.form(form))
+        return m(form = self.form(form), **kw)
 
     render_form.environmentfunction = True

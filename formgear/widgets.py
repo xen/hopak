@@ -136,9 +136,19 @@ class PasswordWidget(Widget):
     """
     PasswordWidget <input type="password" />
     """
-    alter_names = ('string',)
-    template = 'password' # We will try to find text.html template in widgets directory
+    alter_names = ('password', 'passw')
+    template = 'password'
 
+class BooleanWidget(Widget):
+    """" Simple checkbox """
+    alter_names = ('boolean', 'bool')
+    template = 'boolean'
+
+class EmailWidget(Widget):
+    """ Email input filed
+    """
+    alter_names = ('email',)
+    template = 'email'
 
 class CheckboxWidget(Widget):
     """
@@ -156,3 +166,10 @@ class PricerangeWidget(Widget):
 class TimerangeWidget(Widget):
     alter_names = ('timerange',)
     templates = 'timerange'
+
+
+class SelectWidget(Widget):
+    """ One choice with multiple list
+    """
+    alter_names = ('select',)
+    template = 'select'

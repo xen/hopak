@@ -51,7 +51,7 @@ def widgets_path():
 
 
 def file_resolve(field, name, ypath):
-    choicesf = field.pop(name, None)
+    choicesf = field.get(name, None)
 
     if choicesf is None:
         return
@@ -65,7 +65,7 @@ def file_resolve(field, name, ypath):
     choices = []
     for line in choices_file:
         line = line.decode("utf-8")
-        key, val = line.split(".")
+        key, val = line.split("\t", 1)
         choices.append((key, val))
 
     field[name] = choices

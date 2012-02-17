@@ -73,7 +73,7 @@ class BaseField(object):
         self.unique_with = unique_with
         self.default = default
 
-        self.validators = validators
+        self.validators = validators[:]
         if controllers.Required in self.validators:
             self.required = True
         if required:
@@ -119,6 +119,9 @@ class BaseField(object):
 
     def __call__(self, state="view", **kwargs):
         return self.widget.render(self, state, **kwargs)
+
+    def clear(self):
+        self._value = None
 
     def set_value(self, val):
         self._value = val
@@ -250,10 +253,6 @@ class ImageField(BaseField):
 class GeoPointField(BaseField):
     alter_names = ('geo', 'geopoint', )
 
-class CheckboxField(BaseField):
-    alter_names = ('checkbox',)
-    choices = {}
-
 class PricerangeField(BaseField):
     alter_name = ('pricerange')
     widget = widgets.PricerangeWidget
@@ -264,4 +263,26 @@ class PricerangeField(BaseField):
 class TimerangeField(BaseField):
     alter_name = ('timerange')
     widget = widgets.TimerangeWidget
+
+class CheckboxField(BaseField):
+    alter_names = ('checkbox',)
+    choices = {}
+    widget = widgets.CheckboxWidget
+
+    def clear(self,):
+        self._value = []
+
+    def set_value(self, val):
+
+        oldval = getattr(self, '_value', None)
+        if not isinstance(oldval, list):
+            self._value = [] if oldval is None else [oldval]
+
+        if isinstance(val, (list, tuple)):
+            self._value = val
+        else:
+            self._value.append(val)
+
+
+    value = property(BaseField.get_value, set_value)
 
