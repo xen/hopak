@@ -156,3 +156,9 @@ class CheckboxWidget(Widget):
     """
     alter_names = ('checkbox',)
     template = 'checkbox'
+
+class SelectWidget(Widget):
+    """ One choice with multiple list
+    """
+    alter_names = ('select',)
+    template = 'select'
