@@ -157,6 +157,17 @@ class CheckboxWidget(Widget):
     alter_names = ('checkbox',)
     template = 'checkbox'
 
+
+class PricerangeWidget(Widget):
+    alter_names = ('pricerange',)
+    template = 'pricerange'
+
+
+class TimerangeWidget(Widget):
+    alter_names = ('timerange',)
+    template = 'timerange'
+
+
 class SelectWidget(Widget):
     """ One choice with multiple list
     """

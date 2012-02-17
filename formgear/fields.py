@@ -222,7 +222,6 @@ class BooleanField(BaseField):
 
 class EmailField(BaseField):
     alter_names = ('email', )
-    type = 'email'
 
 class FloatField(BaseField):
     alter_names = ('float', )
@@ -254,6 +253,10 @@ class ImageField(BaseField):
 class GeoPointField(BaseField):
     alter_names = ('geo', 'geopoint', )
 
+class TimerangeField(BaseField):
+    alter_name = ('timerange')
+    widget = widgets.TimerangeWidget
+
 class CheckboxField(BaseField):
     alter_names = ('checkbox',)
     choices = {}
@@ -275,3 +278,4 @@ class CheckboxField(BaseField):
 
 
     value = property(BaseField.get_value, set_value)
+
