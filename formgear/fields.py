@@ -279,3 +279,5 @@ class CheckboxField(BaseField):
 
     value = property(BaseField.get_value, set_value)
 
+class StructField(BaseField):
+    alter_names = ('struct',)
