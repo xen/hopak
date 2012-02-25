@@ -123,6 +123,10 @@ class StringWidget(Widget):
     template = 'string' # We will try to find text.html template in widgets directory
     value = ""
 
+class PhoneWidget(Widget):
+    alter_names = ('tel', 'phone', )
+    type = 'tel'
+    template = 'string'
 
 class TextWidget(Widget):
     """
