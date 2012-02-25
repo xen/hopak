@@ -7,7 +7,7 @@
 <div class="control-group {% if field.errors %}error{% endif %}">
   <label for="form_{{ name }}_id">{{ field.title }}</label>
     <div class="controls">
-      {% if len(field.choices) <= 5 %} {# 5 is magic number #}
+      {% if field.choices|length <= 5 %} {# 5 is magic number #}
         {% for key, val in field.choices %}
         <label class="radio">
           <input name="{{ name }}" type="radio"
