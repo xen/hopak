@@ -3,6 +3,7 @@
 from __future__ import print_function
 import os
 import yaml
+import mongo
 
 from formgear.fields import FieldsRegistry
 from formgear.widgets import WidgetRegistry
@@ -255,12 +256,10 @@ class Model(object):
         assert False, "Who is Mr. __key__?"
 
     def save(self):
-        import mongo
         mongo.save(self.kind(), self.to_mongo())
 
     @classmethod
     def all(cls, **kw):
-        import mongo
         return mongo.find(cls.kind(), **kw)
 
     @classmethod
@@ -281,6 +280,10 @@ class Model(object):
             return
 
         return cls(**data[0])
+
+    @classmethod
+    def delete(cls, _filter):
+        mongo.remove(cls.kind(), _filter)
 
     def render_form(self, env=None, state='edit', form='default', **kw):
         """ Render form method
