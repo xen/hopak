@@ -125,7 +125,7 @@ class StringWidget(Widget):
 
 class PhoneWidget(Widget):
     alter_names = ('tel', 'phone', )
-    type = 'tel'
+    _type = 'tel'
     template = 'string'
 
 class TextWidget(Widget):

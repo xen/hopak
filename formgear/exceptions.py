@@ -17,3 +17,13 @@ class YamlAttributeNotFoundException(Exception):
 class YamlEntryNotFoundInListException(Exception):
     pass
 
+class NotFoundValidatorException(Exception):
+    pass
+
+class InvalidValue(Exception):
+    """
+    Base form validation exception
+
+    Based on https://github.com/Pylons/colander/blob/master/colander/__init__.py
+
+    """
