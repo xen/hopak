@@ -15,7 +15,7 @@ def field_comparison_helper(collect_field_classes, source_yaml):
 def test_lookup_class_by_yaml_attribute():
 
     class User(Model):
-        __yaml__ = 'doctype'
+        __yaml__ = 'test_user'
 
     assert ['user',] == ModelRegistry.list()
 
@@ -28,6 +28,7 @@ def test_lookup_class_by_yaml_attribute():
 
 def test_lookup_class_by_class_name():
     class Order(Model):
+        __yaml__ = "test_order"
         pass
 
     # testing ModelRegistry completion

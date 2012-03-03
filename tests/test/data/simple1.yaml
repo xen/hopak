@@ -1,4 +1,0 @@
-word: Строка    # без кавычек удобно
-num: 2009       # число
-none: null      # None
-bool: true      # Bool

@@ -104,3 +104,31 @@ class Length(BaseValidator):
         if self.max is not None:
             if len(value) > self.max:
                 raise InvalidValue(node, self.max_err % str(self.max))
+
+class Max(BaseValidator):
+    """ Validate if value not great than `value`
+    """
+
+    text_err = 'Current value - %d is great than max %d'
+
+    def __init__(self, value=None):
+        self.value = value
+
+    def __call__(self, node, value):
+        if self.value is not None:
+            if self.value < value:
+                raise InvalidValue(node, self.text_err % (self.value, value,))
+
+class Min(BaseValidator):
+    """ Validate if value not less than `value`
+    """
+
+    text_err = 'Current value - %d is less than min %d'
+
+    def __init__(self, value=None):
+        self.value = value
+
+    def __call__(self, node, value):
+        if self.value is not None:
+            if self.value > value:
+                raise InvalidValue(node, self.text_err % (self.value, value,))
