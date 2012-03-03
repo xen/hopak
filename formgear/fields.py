@@ -73,7 +73,7 @@ class BaseField(object):
         self.unique_with = unique_with
         self.default = default
 
-        self.validators = validators[:]
+        self.validators = controllers.lookup(validators)
         if controllers.Required in self.validators:
             self.required = True
         if required:
@@ -90,6 +90,8 @@ class BaseField(object):
     def validate(self):
         """Perform validation on a value.
         """
+        for validator in self.validators:
+            validator(self, self.value)
         return True
 
     def reinstance(self):
