@@ -46,22 +46,6 @@ class Required(BaseValidator):
         if not node:
             raise InvalidValue(node, "is required")
 
-class Max(BaseValidator):
-    def __init__(self, max):
-        self.max = max
-
-    def __call__(self, node):
-        if node > self.max:
-            raise InvalidValue(node, "more then max=%s" % str(self.max))
-
-class Min(BaseValidator):
-    def __init__(self, min):
-        self.min = min
-
-    def __call__(self, node):
-        if node < self.min:
-            raise InvalidValue(node, "less then min=%s" % str(self.min))
-
 class Regex(BaseValidator):
     def __init__(self, regex, msg=None):
         if isinstance(regex, string_types):
