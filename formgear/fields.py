@@ -231,6 +231,8 @@ class IntegerField(BaseField):
 class BooleanField(BaseField):
     alter_names = ('bool', 'boolean', )
 
+    def shortcut(self, value):
+        return True, bool(value)
 
 class EmailField(BaseField):
     alter_names = ('email', )
