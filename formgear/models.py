@@ -241,8 +241,8 @@ class Model(object):
                 getattr(self, fieldname).value
                 for fieldname in names
             ])
-            assert None not in vals, "Field must have value \
-                    if specified in __key__"
+            assert None not in vals, "Field must have a value \
+if specified in __key__"
 
             return unicode.join(u"::", vals)
 

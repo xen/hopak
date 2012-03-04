@@ -9,10 +9,12 @@ from registry import Registry
 class NotFoundFieldException(Exception):
     pass
 
+
 class FieldsRegistry(Registry):
     """ Registry needed to resolve fields from YAML file """
     fields = {}
     NotFound = NotFoundFieldException
+
 
 class MetaField(type):
     """
@@ -30,12 +32,14 @@ class MetaField(type):
 
         return newbornclass
 
+
 def init_partial(real):
     def init_partial(self, *a, **kw):
         self._partial = a, kw
         return real(self, *a, **kw)
 
     return init_partial
+
 
 class BaseField(object):
     """ BaseField is very similar to MongoEngine fields.
@@ -152,6 +156,7 @@ class BaseField(object):
 
         return val
 
+
 class StringField(BaseField):
     """ Simple string
     """
@@ -163,6 +168,7 @@ class StringField(BaseField):
         self.max_length = max_length
         self.min_length = min_length
         super(StringField, self).__init__(**kwargs)
+
 
 class TextField(BaseField):
     """ Plain text field.
@@ -186,6 +192,7 @@ class DateField(BaseField):
         """
         """
         pass
+
 
 class DateTimeField(BaseField):
 
@@ -216,17 +223,22 @@ class DateTimeField(BaseField):
 class TimeField(BaseField):
     alter_names = ('time', )
 
+
 class IntegerField(BaseField):
     alter_names = ('int', 'integer', )
+
 
 class BooleanField(BaseField):
     alter_names = ('bool', 'boolean', )
 
+
 class EmailField(BaseField):
     alter_names = ('email', )
 
+
 class FloatField(BaseField):
     alter_names = ('float', )
+
 
 class URLField(BaseField):
     alter_names = ('url', 'link', )
@@ -249,15 +261,19 @@ class URLField(BaseField):
 class FileField(BaseField):
     alter_names = ('file', 'blob', )
 
+
 class ImageField(BaseField):
     alter_names = ('img', 'image', )
+
 
 class GeoPointField(BaseField):
     alter_names = ('geo', 'geopoint', )
 
+
 class TimerangeField(BaseField):
     alter_name = ('timerange')
     widget = widgets.TimerangeWidget
+
 
 class CheckboxField(BaseField):
     alter_names = ('checkbox',)
@@ -278,8 +294,20 @@ class CheckboxField(BaseField):
         else:
             self._value.append(val)
 
-
     value = property(BaseField.get_value, set_value)
+
 
 class StructField(BaseField):
     alter_names = ('struct',)
+
+
+class PathField(StringField):
+    alter_names = ('pathfield',)
+
+    def set_value(self, val):
+        if val:
+            if not val.startswith("/"):
+                val = "/%s" % (val,)
+            self._value = val
+
+    value = property(BaseField.get_value, set_value)
