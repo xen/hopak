@@ -213,12 +213,12 @@ class Model(object):
 
         if '_id' in doc:
             pass
-        elif hasattr(self, '_id'):
-            doc['_id'] = self._id
         elif hasattr(self, 'key'):
             _id = self.key()
             if not (_id is None):
                 doc['_id'] = _id
+        elif hasattr(self, '_id'):
+           doc['_id'] = self._id
 
         return doc
 
@@ -228,6 +228,11 @@ class Model(object):
 
         if isinstance(self.__key__, (list, tuple)):
             if self.__key__[0] == '_id':
+
+                # don`t generate random id twice
+                if hasattr(self, '_id'):
+                    return self._id
+
                 import pymongo
                 names = self.__key__[1:]
                 vals = [
