@@ -261,7 +261,8 @@ if specified in __key__"
         assert False, "Who is Mr. __key__?"
 
     def save(self):
-        mongo.save(self.kind(), self.to_mongo())
+        _id = getattr(self, '_id', None)
+        mongo.save(self.kind(), self.to_mongo(), _id)
 
     @classmethod
     def all(cls, **kw):
