@@ -233,10 +233,10 @@ class Model(object):
                 if hasattr(self, '_id'):
                     return self._id
 
-                import pymongo
+                import bson
                 names = self.__key__[1:]
                 vals = [
-                        unicode(pymongo.objectid.ObjectId())
+                        unicode(bson.objectid.ObjectId())
                 ]
             else:
                 names = self.__key__
