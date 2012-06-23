@@ -2,7 +2,7 @@
 
 {%- macro edit(form, action=None) -%}
   {% for name, field in form %}
-    {{ field(name = name, state='edit') }}
+    {{ field(name = name, state='edit')|safe }}
   {% endfor %}
   <input type="hidden" value="1" name="form.submitted">
   {% if action %}
