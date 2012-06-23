@@ -70,7 +70,7 @@ class MetaModel(type):
                 widgt_class = WidgetRegistry.resolve(widget_typ)
             else:
                 widgt_class = widget_typ
-            
+
             wdgt = widgt_class(**widget_kw)
 
             file_resolve(field, "choices", ypath)

@@ -18,5 +18,5 @@ def find(collection, **kw):
 
 def remove(collection, _filter):
 	col = db[collection]
-	print collection, _filter
+	#print collection, _filter
 	col.remove(_filter)
