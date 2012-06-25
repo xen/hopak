@@ -48,6 +48,22 @@ class MetaModel(type):
 
             attrs["__yaml__"] = ypath
 
+        # this block should make model registry list looks better
+        _descr = ''
+        if cfg.get('description', None):
+            _descr = cfg.get('description')
+        if attrs.get('__doc__', None) and len(attrs.get('__doc__')):
+            _descr = attrs.get('__doc__')
+        else:
+            attrs['__doc__'] = _descr
+        _title = registername
+        if cfg.get('title', None):
+            _title = cfg.get('title')
+
+        cfg['_name'] = registername
+        cfg['_descr'] = _descr
+        cfg['_title'] = _title
+
         fields = []
         for field in cfg.pop('fields', []):
             if 'name' not in field:
