@@ -286,7 +286,7 @@ class Model(object):
                 vals = []
 
             vals.extend([
-                getattr(self, fieldname).value
+                getattr(self, fieldname)
                 for fieldname in names
             ])
             assert None not in vals, "Field must have a value \
@@ -309,7 +309,11 @@ if specified in __key__"
 
     @classmethod
     def all(cls, **kw):
-        return mongo.find(cls.kind(), **kw)
+        return [
+                cls(**data)
+                for data in 
+                mongo.find(cls.kind(), **kw)
+        ]
 
     @classmethod
     def kind(cls):
@@ -328,7 +332,7 @@ if specified in __key__"
         if not data:
             return
 
-        return cls(**data[0])
+        return data[0]
 
     @classmethod
     def delete(cls, _filter):
