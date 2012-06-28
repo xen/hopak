@@ -179,7 +179,7 @@ class Model(object):
     class Meta:
         abstract = True
 
-    def __init__(self, data=None, subform=None, _id=None, **kw):
+    def __init__(self, data=None, subform=None, _id=None, _raw=False, **kw):
         assert data is None or not kw, 'Pass data in one way'
         if data:
             kw = data
@@ -202,9 +202,9 @@ class Model(object):
         self._fields_dict = dict(fields)
         self.form = FormWrap(self.form.forms, self)
 
-        self.update(kw)
+        self.update(kw, raw=_raw)
 
-    def update(self, data=None, **kw):
+    def update(self, data=None, raw=False, **kw):
         assert data is None or not kw, 'Pass data in one way'
         kw = data or kw
         if callable(getattr(kw, 'items', None)):
@@ -244,6 +244,7 @@ class Model(object):
             fields = object.__getattribute__(self,'_fields_dict')
             if name in fields:
                 self._field(name).value = value
+                return
 
         except AttributeError:
             pass
@@ -265,7 +266,7 @@ class Model(object):
     def to_mongo(self):
 
         doc = dict([
-            (name, getattr(self, name).to_mongo)
+            (name, field.to_mongo)
             for name,field in self._fields
         ])
 
@@ -320,12 +321,13 @@ if specified in __key__"
 
     def save(self):
         _id = getattr(self, '_id', None)
-        mongo.save(self.kind(), self.to_mongo(), _id)
+        self._id = mongo.save(self.kind(), self.to_mongo(), _id)
+        return self._id
 
     @classmethod
     def all(cls, **kw):
         return [
-                cls(**data)
+                cls(_raw=True, **data)
                 for data in 
                 mongo.find(cls.kind(), **kw)
         ]

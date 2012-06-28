@@ -8,8 +8,9 @@ def save(collection, data, _id=None):
     _id = _id or data.get('_id')
     if not (_id is None):
         col.update({"_id": _id}, data, upsert=True, safe=True)
+        return _id
     else:
-        col.insert(data)
+        return col.insert(data)
 
 def find(collection, **kw):
     col = db[collection]
