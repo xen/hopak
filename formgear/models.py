@@ -4,8 +4,6 @@ from __future__ import print_function
 import os
 import yaml
 import mongo
-from functools import partial
-import types
 
 from formgear.fields import FieldsRegistry
 from formgear.widgets import WidgetRegistry
@@ -22,6 +20,20 @@ yamlsfiles = yamls_files()
 
 class ModelRegistry(Registry):
     NotFound = NotFoundModelException
+
+def model_wrap(model, **wrap_kw):
+    class Wrapper(model):
+        __yaml__ = model.__yaml__
+        def __init__(self, *a, **kw):
+            kw.update(wrap_kw)
+            super(Wrapper, self).__init__(*a, **kw)
+
+        class Meta:
+            abstract = True
+
+    Wrapper.__name__ = model.__name__
+
+    return Wrapper
 
 class FormWrap(object):
     def __init__(self, forms, model):
@@ -61,7 +73,9 @@ class FormWrap(object):
                 raise
 
         if isinstance(self.model, type):
-            return partial(self.model, subform=name)
+            model = model_wrap(self.model, subform=name)
+            model.subform = name
+            return model
 
         obj = self.model.__class__(subform=name)
         obj._fields = self.model._fields
