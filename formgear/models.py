@@ -257,8 +257,7 @@ class Model(object):
         return object.__setattr__(self, name, value)
 
     def validate(self):
-        for name, __field in self._fields:
-            field = getattr(self, name)
+        for name, field in self._fields:
             if not hasattr(field, 'validate'):
                 continue
 

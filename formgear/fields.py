@@ -213,7 +213,7 @@ class DateTimeField(BaseField):
 
         from dateutil import parser
         try:
-            self.value = parser.parse(self.value)
+            self.value = parser.parse(self.value or '')
         except ValueError:
             return
 
@@ -236,6 +236,14 @@ class BooleanField(BaseField):
 
 class EmailField(BaseField):
     alter_names = ('email', )
+
+    def validate(self):
+        ret = '@' in self.value
+        if not ret:
+            self.errors = [
+                    u"Wrong email format",
+            ]
+        return ret
 
 
 class FloatField(BaseField):
