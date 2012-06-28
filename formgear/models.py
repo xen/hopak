@@ -218,6 +218,9 @@ class Model(object):
             if not field:
                 continue
 
+            if getattr(field, 'locked', False):
+                continue
+
             field.value = val
 
     def items(self):
