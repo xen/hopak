@@ -26,10 +26,11 @@ class ModelRegistry(Registry):
 class FormWrap(object):
     def __init__(self, forms, model):
         self.model = model
+
         self.forms = forms
-        self._fields_dict = dict(self.model._fields)
 
     def get(self, name):
+        name = name or 'default'
         for form in self.forms:
             if form['name'] == name:
                     return form
@@ -37,7 +38,7 @@ class FormWrap(object):
         raise KeyError("Form %r not found for model %r" % (name, self.model))
 
     def field(self, name):
-        return self._fields_dict[name]
+        return self.model._fields_dict[name]
 
     def __call__(self, name, fields=[]):
         if not fields:
@@ -56,7 +57,15 @@ class FormWrap(object):
         try:
             return object.__getattribute__(self, name)
         except AttributeError:
+            if self.get(name) is None:
+                raise
+
+        if isinstance(self.model, type):
             return partial(self.model, subform=name)
+
+        obj = self.model.__class__(subform=name)
+        obj._fields = self.model._fields
+        return obj
 
 
 class MetaModel(type):
@@ -152,6 +161,8 @@ class MetaModel(type):
             setattr(newbornclass, fname, ffunc)
 
         newbornclass._fields = fields
+        newbornclass._fields_dict = dict(fields)
+
 
         newbornclass.form = FormWrap(forms, newbornclass)
 
@@ -163,22 +174,25 @@ class MetaModel(type):
 
 class Model(object):
     __metaclass__ = MetaModel
+    subform = None
 
     class Meta:
         abstract = True
 
-    def __init__(self, data=None, subform='default', _id=None, **kw):
+    def __init__(self, data=None, subform=None, _id=None, **kw):
         assert data is None or not kw, 'Pass data in one way'
         if data:
             kw = data
         if _id:
             self._id = _id
 
-        self.form = self.form.get(subform)
+        self.subform = subform
+        form = self.form.get(subform)
+        self.render_form = self._render_form
 
         fields = []
         for name, _field in self._fields:
-            if name not in self.form['fields']:
+            if name not in form['fields']:
                 continue
 
             field = _field.reinstance()
@@ -186,6 +200,7 @@ class Model(object):
 
         self._fields = fields
         self._fields_dict = dict(fields)
+        self.form = FormWrap(self.form.forms, self)
 
         self.update(kw)
 
@@ -295,7 +310,7 @@ if specified in __key__"
             return unicode.join(u"::", vals)
 
         elif isinstance(self.__key__, basestring):
-            return getattr(self, self.__key__).value
+            return getattr(self, self.__key__)
         elif callable(self.__key__):
             return self.__key__()
         elif hasattr(self.__class__.__key__, 'getter'):
@@ -338,13 +353,18 @@ if specified in __key__"
     def delete(cls, _filter):
         mongo.remove(cls.kind(), _filter)
 
-    def render_form(self, env=None, state='edit', form='default', **kw):
+    def render_form(self, env=None, state='edit', form=None, **kw):
         """ Render form method
         """
+        assert form is None or self.subform is None
         env = env or Environment(loader=PackageLoader('formgear'))
         template = env.get_template('form.html')
         m = getattr(template.module, state, None)
-        return m(form = self.form(form), **kw)
 
+        fields = self.form(form or self.subform or 'default')
+
+        return m(form = fields, **kw)
+
+    _render_form = render_form
     render_form.environmentfunction = True
     render_form = classmethod(render_form)
