@@ -22,18 +22,12 @@ class ModelRegistry(Registry):
     NotFound = NotFoundModelException
 
 def model_wrap(model, **wrap_kw):
-    class Wrapper(model):
-        __yaml__ = model.__yaml__
-        def __init__(self, *a, **kw):
-            kw.update(wrap_kw)
-            super(Wrapper, self).__init__(*a, **kw)
+    def __init__(self, *a, **kw):
+        kw.update(wrap_kw)
+        model.__init__(self, *a, **kw)
 
-        class Meta:
-            abstract = True
-
-    Wrapper.__name__ = model.__name__
-
-    return Wrapper
+    attrs = {"__init__": __init__, "__fake": True}
+    return MetaModel(model.__name__, (model,), attrs)
 
 class FormWrap(object):
     def __init__(self, forms, model):
@@ -89,6 +83,7 @@ class MetaModel(type):
     def __new__(cls, name, bases, attrs):
         meta = attrs.pop('Meta', None)
         abstract = getattr(meta, 'abstract', False)
+        fake = attrs.pop('__fake', None)
         registername = attrs.pop('name', name.lower())
 
         cfg = {}
@@ -180,7 +175,7 @@ class MetaModel(type):
 
         newbornclass.form = FormWrap(forms, newbornclass)
 
-        if not abstract:
+        if not abstract and not fake:
             #print("Register widget:", registername)
             ModelRegistry.register(newbornclass, registername)
 
