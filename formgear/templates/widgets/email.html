@@ -12,6 +12,7 @@
         <input name="{{ name }}" type="email" id="form_{{ name }}_id"
            value="{{ field.value or field.empty }}" {% if field.required %}required{% endif %}
            placeholder="{{ field.placeholder }}"
+           {% if field.locked %}readonly="on"{%endif%}
            {% if field.pattern %}pattern="{{ field.pattern }}"{% endif %}
            {% if field.autofocus %}autofocus{% endif %} />
       </div>

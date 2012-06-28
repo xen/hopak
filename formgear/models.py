@@ -203,6 +203,8 @@ class Model(object):
         self.form = FormWrap(self.form.forms, self)
 
         self.update(kw, raw=_raw)
+        if _id:
+            self.lock_id()
 
     def update(self, data=None, raw=False, **kw):
         assert data is None or not kw, 'Pass data in one way'
@@ -280,6 +282,21 @@ class Model(object):
            doc['_id'] = self._id
 
         return doc
+
+    def lock_id(self):
+        if not hasattr(self.__class__, '__key__'):
+            return
+
+        if not isinstance(self.__key__, (list, tuple)):
+            return
+
+        for name in self.__key__:
+            field = self._field(name)
+            if not field:
+                continue
+
+            field.locked = True
+
 
     def key(self):
         if not hasattr(self.__class__, '__key__'):
