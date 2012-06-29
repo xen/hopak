@@ -5,6 +5,7 @@ import datetime, re
 import controllers
 import widgets
 from registry import Registry
+from formgear.exceptions import InvalidValue
 
 class NotFoundFieldException(Exception):
     pass
@@ -94,9 +95,18 @@ class BaseField(object):
     def validate(self):
         """Perform validation on a value.
         """
+        ret = True
+        self.errors = []
         for validator in self.validators:
-            validator(self, self.value)
-        return True
+            if isinstance(validator, type):
+                validator = validator()
+
+            try:
+                validator(self, self.value)
+            except InvalidValue, e:
+                ret = False
+                self.errors.append(e.args[1])
+        return ret
 
     def reinstance(self):
         a, kw = self._partial
