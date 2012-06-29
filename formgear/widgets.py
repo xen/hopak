@@ -81,6 +81,9 @@ class Widget(object):
         self.__dict__.update(kw)
 
     def render(self, field, state, env=None, **kw):
+        if self.hidden:
+            return ''
+
         """ Here is should be field rendering
         """
         if not env:
