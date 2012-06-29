@@ -199,16 +199,18 @@ class Model(object):
         form = self.form.get(subform)
         self.render_form = self._render_form
 
-        fields = []
+        subform_fields = []
+        all_fields = []
         for name, _field in self._fields:
-            if name not in form['fields']:
-                continue
-
             field = _field.reinstance()
-            fields.append((name, field))
+            all_fields.append((name,field))
 
-        self._fields = fields
-        self._fields_dict = dict(fields)
+            if name in form['fields']:
+                subform_fields.append((name, field))
+
+        self._fields = subform_fields
+        self._fields_dict = dict(subform_fields)
+        self._all_fields_dict = dict(all_fields)
         self.form = FormWrap(self.form.forms, self)
 
         self.update(kw, raw=_raw)
@@ -223,7 +225,7 @@ class Model(object):
 
         for name, val in kw:
 
-            field = self._field(name)
+            field = self._field(name, raw=raw)
             if not field:
                 continue
 
@@ -239,26 +241,35 @@ class Model(object):
     def __iter__(self):
         return iter(self.form())
 
-    def _field(self, name):
+    def _field(self, name, raw=False):
+        if raw:
+            return self._all_fields_dict.get(name)
         return self._fields_dict.get(name)
 
+    # getattr gives access to all loaded fields
     def __getattribute__(self, name):
         try:
-            fields = object.__getattribute__(self,'_fields_dict')
+            fields = object.__getattribute__(self,'_all_fields_dict')
             if name in fields:
-                return self._field(name).value
+                return fields.get(name).value
 
         except AttributeError:
             pass
 
         return object.__getattribute__(self, name)
 
+    # setattr gives acces only to fields available in this subform
     def __setattr__(self, name, value):
         try:
             fields = object.__getattribute__(self,'_fields_dict')
             if name in fields:
-                self._field(name).value = value
+                fields[name].value = value
                 return
+            elif name in object.__getattribute__(self,'_all_fields_dict'):
+                raise TypeError(
+                    "Refused to update field %s missing in subform %s" %
+                    (name, self.subform)
+                )
 
         except AttributeError:
             pass
@@ -280,7 +291,7 @@ class Model(object):
 
         doc = dict([
             (name, field.to_mongo)
-            for name,field in self._fields
+            for name,field in self._all_fields_dict.items()
         ])
 
         if '_id' in doc:
