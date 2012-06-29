@@ -238,7 +238,7 @@ class Model(object):
             yield name, field.value
 
     def __iter__(self):
-        return iter(self.form())
+        return iter(self.form(self.subform))
 
     def _field(self, name, raw=False):
         if raw:

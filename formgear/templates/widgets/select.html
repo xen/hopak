@@ -1,22 +1,22 @@
-{%- macro view(name, field) %}
+{%- macro view(name, field, prefix) %}
   <h3>{{ name }}</h3>
   <p>{{ field.value }}</p>
 {%- endmacro %}
 
-{%- macro edit(name, field) %}
+{%- macro edit(name, field, prefix) %}
 <div class="control-group {% if field.errors %}error{% endif %}">
   <label for="form_{{ name }}_id">{{ field.title }}</label>
     <div class="controls">
       {% if field.choices|length <= 5 %} {# 5 is magic number #}
         {% for key, val in field.choices %}
         <label class="radio">
-          <input name="{{ name }}" type="radio"
+          <input name="{{ prefix }}{{ name }}" type="radio"
             value="{{ key }}" {% if key == field.value %}checked{% endif %} />
           {{ val }}
         </label>
         {% endfor %}
       {% else %}
-        <select name="{{ name }}">
+        <select name="{{ prefix }}{{ name }}">
           <option>Select</option>
           {% for key, val in field.choices %}
             <option {% if key == field.value %}selected{% endif %} value="{{ key }}">{{ val }}</option>
