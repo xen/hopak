@@ -46,9 +46,9 @@ class FormWrap(object):
     def field(self, name):
         return self.model._fields_dict[name]
 
-    def __call__(self, name, fields=[]):
+    def __call__(self, name=None, fields=[]):
         if not fields:
-            form = self.get(name)
+            form = self.get(name or self.model.subform)
             if form:
                 fields = form['fields']
 
