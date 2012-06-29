@@ -26,7 +26,7 @@ def model_wrap(model, **wrap_kw):
         kw.update(wrap_kw)
         model.__init__(self, *a, **kw)
 
-    attrs = {"__init__": __init__, "__fake": True}
+    attrs = {"__init__": __init__, "__fake__": True}
     return MetaModel(model.__name__, (model,), attrs)
 
 class FormWrap(object):
@@ -83,7 +83,7 @@ class MetaModel(type):
     def __new__(cls, name, bases, attrs):
         meta = attrs.pop('Meta', None)
         abstract = getattr(meta, 'abstract', False)
-        fake = attrs.pop('__fake', None)
+        fake = attrs.pop('__fake__', None)
         registername = attrs.pop('name', name.lower())
 
         cfg = {}
@@ -176,7 +176,6 @@ class MetaModel(type):
         newbornclass.form = FormWrap(forms, newbornclass)
 
         if not abstract and not fake:
-            #print("Register widget:", registername)
             ModelRegistry.register(newbornclass, registername)
 
         return newbornclass
