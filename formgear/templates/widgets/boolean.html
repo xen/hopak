@@ -1,9 +1,9 @@
-{%- macro view(name, field) %}
+{%- macro view(name, field, prefix) %}
   <h3>{{ name }}</h3>
   <p>{% if field.value %}<i class="icon-ok"></i>{% else %}<i class="icon-remove"></i>{% endif %}</p>
 {%- endmacro %}
 
-{%- macro edit(name, field) %}
+{%- macro edit(name, field, prefix) %}
 <div class="control-group {% if field.errors %}error{% endif %}">
     <label for="form_{{ name }}_id">{{ field.title }}</label>
     <div class="controls">

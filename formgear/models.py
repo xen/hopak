@@ -4,8 +4,6 @@ from __future__ import print_function
 import os
 import yaml
 import mongo
-from functools import partial
-import types
 
 from formgear.fields import FieldsRegistry
 from formgear.widgets import WidgetRegistry
@@ -23,11 +21,19 @@ yamlsfiles = yamls_files()
 class ModelRegistry(Registry):
     NotFound = NotFoundModelException
 
+def model_wrap(model, **wrap_kw):
+    def __init__(self, *a, **kw):
+        kw.update(wrap_kw)
+        model.__init__(self, *a, **kw)
+
+    attrs = {"__init__": __init__, "__fake__": True}
+    return MetaModel(model.__name__, (model,), attrs)
+
 class FormWrap(object):
     def __init__(self, forms, model):
         self.model = model
+
         self.forms = forms
-        self._fields_dict = dict(self.model._fields)
 
     def get(self, name, silent=None):
         """ Return form fields as dict for a class:
@@ -42,6 +48,7 @@ class FormWrap(object):
         If `silent` param provided then wrong form name don't caught exception
 
         """
+        name = name or 'default'
         for form in self.forms:
             if form['name'] == name:
                     return form
@@ -51,11 +58,11 @@ class FormWrap(object):
             raise KeyError("Form %r not found for model %r" % (name, self.model))
 
     def field(self, name):
-        return self._fields_dict[name]
+        return self.model._fields_dict[name]
 
-    def __call__(self, name, fields=[]):
+    def __call__(self, name=None, fields=[]):
         if not fields:
-            form = self.get(name)
+            form = self.get(name or self.model.subform)
             if form:
                 fields = form['fields']
 
@@ -70,7 +77,17 @@ class FormWrap(object):
         try:
             return object.__getattribute__(self, name)
         except AttributeError:
-            return partial(self.model, subform=name)
+            if self.get(name) is None:
+                raise
+
+        if isinstance(self.model, type):
+            model = model_wrap(self.model, subform=name)
+            model.subform = name
+            return model
+
+        obj = self.model.__class__(subform=name)
+        obj._fields = self.model._fields
+        return obj
 
 
 class MetaModel(type):
@@ -80,6 +97,7 @@ class MetaModel(type):
     def __new__(cls, name, bases, attrs):
         meta = attrs.pop('Meta', None)
         abstract = getattr(meta, 'abstract', False)
+        fake = attrs.pop('__fake__', None)
         registername = attrs.pop('name', name.lower())
 
         cfg = {}
@@ -166,44 +184,53 @@ class MetaModel(type):
             setattr(newbornclass, fname, ffunc)
 
         newbornclass._fields = fields
+        newbornclass._fields_dict = dict(fields)
+
 
         newbornclass.form = FormWrap(forms, newbornclass)
 
-        if not abstract:
-            #print("Register widget:", registername)
+        if not abstract and not fake:
             ModelRegistry.register(newbornclass, registername)
 
         return newbornclass
 
 class Model(object):
     __metaclass__ = MetaModel
+    subform = None
 
     class Meta:
         abstract = True
 
-    def __init__(self, data=None, subform='default', _id=None, **kw):
+    def __init__(self, data=None, subform=None, _id=None, _raw=False, **kw):
         assert data is None or not kw, 'Pass data in one way'
         if data:
             kw = data
         if _id:
             self._id = _id
 
-        self.form = self.form.get(subform)
+        self.subform = subform
+        form = self.form.get(subform)
+        self.render_form = self._render_form
 
-        fields = []
+        subform_fields = []
+        all_fields = []
         for name, _field in self._fields:
-            if name not in self.form['fields']:
-                continue
-
             field = _field.reinstance()
-            fields.append((name, field))
+            all_fields.append((name,field))
 
-        self._fields = fields
-        self._fields_dict = dict(fields)
+            if name in form['fields']:
+                subform_fields.append((name, field))
 
-        self.update(kw)
+        self._fields = subform_fields
+        self._fields_dict = dict(subform_fields)
+        self._all_fields_dict = dict(all_fields)
+        self.form = FormWrap(self.form.forms, self)
 
-    def update(self, data=None, **kw):
+        self.update(kw, raw=_raw)
+        if _id:
+            self.lock_id()
+
+    def update(self, data=None, raw=False, **kw):
         assert data is None or not kw, 'Pass data in one way'
         kw = data or kw
         if callable(getattr(kw, 'items', None)):
@@ -211,8 +238,11 @@ class Model(object):
 
         for name, val in kw:
 
-            field = self._field(name)
+            field = self._field(name, raw=raw)
             if not field:
+                continue
+
+            if getattr(field, 'locked', False):
                 continue
 
             field.value = val
@@ -222,27 +252,37 @@ class Model(object):
             yield name, field.value
 
     def __iter__(self):
-        return iter(self.form())
+        return iter(self.form(self.subform))
 
-    def _field(self, name):
+    def _field(self, name, raw=False):
+        if raw:
+            return self._all_fields_dict.get(name)
         return self._fields_dict.get(name)
 
+    # getattr gives access to all loaded fields
     def __getattribute__(self, name):
         try:
-            fields = object.__getattribute__(self,'_fields_dict')
+            fields = object.__getattribute__(self,'_all_fields_dict')
             if name in fields:
-                return self._field(name).value
+                return fields.get(name).value
 
         except AttributeError:
             pass
 
         return object.__getattribute__(self, name)
 
+    # setattr gives acces only to fields available in this subform
     def __setattr__(self, name, value):
         try:
             fields = object.__getattribute__(self,'_fields_dict')
             if name in fields:
-                self._field(name).value = value
+                fields[name].value = value
+                return
+            elif name in object.__getattribute__(self,'_all_fields_dict'):
+                raise TypeError(
+                    "Refused to update field %s missing in subform %s" %
+                    (name, self.subform)
+                )
 
         except AttributeError:
             pass
@@ -250,8 +290,7 @@ class Model(object):
         return object.__setattr__(self, name, value)
 
     def validate(self):
-        for name, __field in self._fields:
-            field = getattr(self, name)
+        for name, field in self._fields:
             if not hasattr(field, 'validate'):
                 continue
 
@@ -264,8 +303,8 @@ class Model(object):
     def to_mongo(self):
 
         doc = dict([
-            (name, getattr(self, name).to_mongo)
-            for name,field in self._fields
+            (name, field.to_mongo)
+            for name,field in self._all_fields_dict.items()
         ])
 
         if '_id' in doc:
@@ -278,6 +317,21 @@ class Model(object):
            doc['_id'] = self._id
 
         return doc
+
+    def lock_id(self):
+        if not hasattr(self.__class__, '__key__'):
+            return
+
+        if not isinstance(self.__key__, (list, tuple)):
+            return
+
+        for name in self.__key__:
+            field = self._field(name)
+            if not field:
+                continue
+
+            field.locked = True
+
 
     def key(self):
         if not hasattr(self.__class__, '__key__'):
@@ -309,7 +363,7 @@ if specified in __key__"
             return unicode.join(u"::", vals)
 
         elif isinstance(self.__key__, basestring):
-            return getattr(self, self.__key__).value
+            return getattr(self, self.__key__)
         elif callable(self.__key__):
             return self.__key__()
         elif hasattr(self.__class__.__key__, 'getter'):
@@ -319,13 +373,14 @@ if specified in __key__"
 
     def save(self):
         _id = getattr(self, '_id', None)
-        mongo.save(self.kind(), self.to_mongo(), _id)
+        self._id = mongo.save(self.kind(), self.to_mongo(), _id)
+        return self._id
 
     @classmethod
     def all(cls, **kw):
         return [
-                cls(**data)
-                for data in
+                cls(_raw=True, **data)
+                for data in 
                 mongo.find(cls.kind(), **kw)
         ]
 
@@ -352,13 +407,18 @@ if specified in __key__"
     def delete(cls, _filter):
         mongo.remove(cls.kind(), _filter)
 
-    def render_form(self, env=None, state='edit', form='default', **kw):
+    def render_form(self, env=None, state='edit', form=None, **kw):
         """ Render form method
         """
+        assert form is None or self.subform is None
         env = env or Environment(loader=PackageLoader('formgear'))
         template = env.get_template('form.html')
         m = getattr(template.module, state, None)
-        return m(form = self.form(form), **kw)
 
+        fields = self.form(form or self.subform or 'default')
+
+        return m(form = fields, **kw)
+
+    _render_form = render_form
     render_form.environmentfunction = True
     render_form = classmethod(render_form)

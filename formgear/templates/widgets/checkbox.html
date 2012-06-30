@@ -1,23 +1,23 @@
-{%- macro view(name, field) %}
+{%- macro view(name, field, prefix) %}
   <h3>{{ name }}</h3>
   <p>{{ field.value | join(', ') }}</p>
 {%- endmacro %}
 
-{%- macro edit(name, field) %}
+{%- macro edit(name, field, prefix) %}
 <div class="control-group {% if field.errors %}error{% endif %}">
   <label for="form_{{ name }}_id">{{ field.title }}</label>
     <div class="controls">
       {% if field.choices %}
       {% for key, val in field.choices %}
         <label class="checkbox">
-          <input name="{{ name }}" type="checkbox"
+          <input name="{{ prefix }}{{ name }}" type="checkbox"
             value="{{ key }}" {% if key in field.value %}checked{% endif %} />
           {{ val }}
         </label>
       {% endfor %}
       {% else %}
         <label class="checkbox">
-        <input name="{{ name }}" type="checkbox" id="form_{{ name }}_id"
+        <input name="{{ prefix }}{{ name }}" type="checkbox" id="form_{{ name }}_id"
                value="1" /> {{ field.title }}</label>
       {% endif %}
     </div>

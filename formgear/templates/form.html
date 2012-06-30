@@ -13,6 +13,16 @@
   {% endif %}
 {%- endmacro -%}
 
+{%- macro table_edit(form) -%}
+  <tr>
+  {% for name, field in form %}
+      <td field="{{name}}">
+        {{ field(name = name, state='inline_edit', **kwargs)|safe }}
+      </td>
+  {% endfor %}
+  </tr>
+{%- endmacro -%}
+
 {%- macro render_search(form, url, action="Найти") %}
   <div class="well">
     <form action="{{ url }}" method="GET">

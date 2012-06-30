@@ -69,3 +69,19 @@ def file_resolve(field, name, ypath):
 
     field[name] = choices
 
+def form_dict(form):
+    ret = {}
+    for key, val in form:
+        container = ret
+        while '__' in key:
+            ckey, key = key.split('__', 1)
+            if ckey.isdigit():
+                ckey = int(ckey)
+            _container = container.get(ckey, {})
+            container[ckey] = _container
+            container = _container
+
+        container[key] = val
+
+    return ret
+

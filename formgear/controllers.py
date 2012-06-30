@@ -43,8 +43,8 @@ class Required(BaseValidator):
     def __init__(self):
         pass
 
-    def __call__(self, node):
-        if not node:
+    def __call__(self, node, value):
+        if not value:
             raise InvalidValue(node, "is required")
 
 class Regex(BaseValidator):
