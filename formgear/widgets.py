@@ -34,6 +34,7 @@ class MetaWidget(type):
         newbornclass = super(MetaWidget, cls).__new__(cls, name, bases, attrs)
 
         if not abstract:
+            newbornclass.load_macros()
             #print("Register widget:", registername)
             WidgetRegistry.register(newbornclass, registername)
 
@@ -84,16 +85,23 @@ class Widget(object):
         if self.hidden:
             return ''
 
-        """ Here is should be field rendering
-        """
-        if not env:
-            env = Environment(loader=FileSystemLoader(widgetspath))
-        tmplt = env.get_template(self.template+".html")
-        macro = getattr(tmplt.module, state, None)
+        macro = getattr(self, '_macro_%s' % state, None)
         if not macro:
             return '' # XXX: output red text?
 
         return macro(field=field, widget=self, **kw)
+
+    @classmethod
+    def load_macros(cls):
+        env = Environment(loader=FileSystemLoader(widgetspath))
+        tmplt = env.get_template(cls.template+".html")
+        mod = tmplt.module
+        for macro_name, macro in mod.__dict__.items():
+            if macro_name[0] == '_':
+                continue
+
+            setattr(cls, '_macro_%s' % macro_name, macro)
+
 
 # html5 input fields, support status here http://www.w3schools.com/html5/html5_form_input_types.asp
 # color
@@ -139,7 +147,7 @@ class TextWidget(Widget):
     template = 'text'
 
 
-class PasswordWidget(Widget):
+class PasswordWidget(StringWidget):
     """
     PasswordWidget <input type="password" />
     """
@@ -152,7 +160,7 @@ class BooleanWidget(Widget):
     alter_names = ('boolean', 'bool')
     template = 'boolean'
 
-class EmailWidget(Widget):
+class EmailWidget(StringWidget):
     """ Email input filed
     """
     alter_names = ('email',)
@@ -183,11 +191,11 @@ class SelectWidget(Widget):
     alter_names = ('select',)
     template = 'select'
 
-class ImageWidget(Widget):
+'''class ImageWidget(Widget):
     """
     http://blueimp.github.com/jQuery-File-Upload/
     """
-    pass
+    pass'''
 
 class WysiwygWidget(Widget):
     alter_names = ('wysiwyg',)
