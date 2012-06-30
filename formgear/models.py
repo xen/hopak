@@ -39,7 +39,7 @@ class FormWrap(object):
         """ Return form fields as dict for a class:
 
             >>> model.form(name='default')
-            [('email', <formgear.fields.StringField object at 4529231184>), ('password', <formgear.fields.StringField object at 4529230864>), ('role', <formgear.fields.StringField object at 4529231120>), ('created', <formgear.fields.DateTimeField object at 4529231696>), ('phone', <formgear.fields.StringField object at 4529231312>), ('status', <formgear.fields.BooleanField object at 4529231632>), ('social', <formgear.fields.StringField object at 4529232080>), ('social_token', <formgear.fields.StringField object at 4529231824>), ('name', <formgear.fields.StringField object at 4529231952>)]
+            [('email', <formgear.fields.StringField object at 4529231184>), ...)]
             >>> model.form(name='search')
             KeyError: "Form 'search' not found for model <class 'admin.auth.models.User'>"
 
@@ -60,9 +60,9 @@ class FormWrap(object):
     def field(self, name):
         return self.model._fields_dict[name]
 
-    def __call__(self, name=None, fields=[]):
+    def __call__(self, name=None, fields=[], **kw):
         if not fields:
-            form = self.get(name or self.model.subform)
+            form = self.get(name or self.model.subform, **kw)
             if form:
                 fields = form['fields']
 
@@ -380,7 +380,7 @@ if specified in __key__"
     def all(cls, **kw):
         return [
                 cls(_raw=True, **data)
-                for data in 
+                for data in
                 mongo.find(cls.kind(), **kw)
         ]
 
@@ -410,6 +410,7 @@ if specified in __key__"
     def render_form(self, env=None, state='edit', form=None, **kw):
         """ Render form method
         """
+        print(state)
         assert form is None or self.subform is None
         env = env or Environment(loader=PackageLoader('formgear'))
         template = env.get_template('form.html')
