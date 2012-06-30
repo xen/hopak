@@ -29,12 +29,26 @@ class FormWrap(object):
         self.forms = forms
         self._fields_dict = dict(self.model._fields)
 
-    def get(self, name):
+    def get(self, name, silent=None):
+        """ Return form fields as dict for a class:
+
+            >>> model.form(name='default')
+            [('email', <formgear.fields.StringField object at 4529231184>), ('password', <formgear.fields.StringField object at 4529230864>), ('role', <formgear.fields.StringField object at 4529231120>), ('created', <formgear.fields.DateTimeField object at 4529231696>), ('phone', <formgear.fields.StringField object at 4529231312>), ('status', <formgear.fields.BooleanField object at 4529231632>), ('social', <formgear.fields.StringField object at 4529232080>), ('social_token', <formgear.fields.StringField object at 4529231824>), ('name', <formgear.fields.StringField object at 4529231952>)]
+            >>> model.form(name='search')
+            KeyError: "Form 'search' not found for model <class 'admin.auth.models.User'>"
+
+        There is always 'default' form which contaions all model field.
+
+        If `silent` param provided then wrong form name don't caught exception
+
+        """
         for form in self.forms:
             if form['name'] == name:
                     return form
-
-        raise KeyError("Form %r not found for model %r" % (name, self.model))
+        if silent:
+            return None
+        else:
+            raise KeyError("Form %r not found for model %r" % (name, self.model))
 
     def field(self, name):
         return self._fields_dict[name]
@@ -311,7 +325,7 @@ if specified in __key__"
     def all(cls, **kw):
         return [
                 cls(**data)
-                for data in 
+                for data in
                 mongo.find(cls.kind(), **kw)
         ]
 
