@@ -1,23 +1,26 @@
+{% import "base_widget.html" as b %}
+
 {%- macro view(name, field, prefix) %}
   <h3>{{ name }}</h3>
   <p>{{ field.value }}</p>
 {%- endmacro %}
 
-{%- macro edit(name, field, prefix) %}
+{%- macro edit(name, field) %}
 <div class="control-group {% if field.errors %}error{% endif %}">
     <label for="form_{{ name }}_id">{{ field.title }}</label>
     <div class="controls">
       <div class="input-prepend">
         <span class="add-on"><i class="icon-envelope"></i></span>
-        <input name="{{ prefix }}{{ name }}" type="email" id="form_{{ name }}_id"
-           value="{{ field.value or field.empty }}" {% if field.required %}required{% endif %}
-           placeholder="{{ field.placeholder }}"
-           {% if field.locked %}readonly="on"{%endif%}
-           {% if field.pattern %}pattern="{{ field.pattern }}"{% endif %}
-           {% if field.autofocus %}autofocus{% endif %} />
+        <input {{ b.text_attrs(field, name, **kwargs) }}
+            value="{{ field.value or field.empty }}" />
       </div>
-    {% if field.errors %}<span class="help-inline">{{ field.errors|join(', ') }}</span>{% endif %}
+    {{ b.errors(field) }}
     {% if field.description %}<span class="help-block">{{ field.description }}</span>{% endif %}
     </div>
 </div>
 {%- endmacro %}
+
+{%- macro inline_edit(name, field) -%}
+<input {{ b.text_attrs(field, name, **kwargs) }}
+            value="{{ field.value or field.empty }}" />
+{%- endmacro -%}

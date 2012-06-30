@@ -93,7 +93,7 @@ class Widget(object):
         if not macro:
             return '' # XXX: output red text?
 
-        return macro(field=field, **kw)
+        return macro(field=field, widget=self, **kw)
 
 # html5 input fields, support status here http://www.w3schools.com/html5/html5_form_input_types.asp
 # color
@@ -145,6 +145,7 @@ class PasswordWidget(Widget):
     """
     alter_names = ('password', 'passw')
     template = 'password'
+    type = 'password'
 
 class BooleanWidget(Widget):
     """" Simple checkbox """
@@ -156,6 +157,7 @@ class EmailWidget(Widget):
     """
     alter_names = ('email',)
     template = 'email'
+    type = 'email'
 
 class CheckboxWidget(Widget):
     """

@@ -13,11 +13,11 @@
   {% endif %}
 {%- endmacro -%}
 
-{%- macro table_edit(form, prefix) -%}
+{%- macro table_edit(form) -%}
   <tr>
   {% for name, field in form %}
       <td field="{{name}}">
-        {{ field(name = name, state='edit', prefix=prefix)|safe }}
+        {{ field(name = name, state='inline_edit', **kwargs)|safe }}
       </td>
   {% endfor %}
   </tr>

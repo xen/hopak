@@ -1,0 +1,19 @@
+{%- macro label(field, name, prefix, widget) -%}
+<label for="form_{{ name }}_id">{{ field.title }}</label>
+{%- endmacro -%}
+
+{%- macro text_attrs(field, name, prefix, widget) -%}
+    name="{{ prefix }}{{ name }}"
+    type="{{ widget.type }}"
+    id="form_{{ name }}_id"
+    placeholder="{{ field.placeholder }}"
+
+    {% if field.required %}required{% endif %}
+    {% if field.locked %}readonly="on"{%endif%}
+    {% if field.pattern %}pattern="{{ field.pattern }}"{% endif %}
+    {% if field.autofocus %}autofocus{% endif %} 
+{%- endmacro -%}
+
+{%- macro errors(field) -%}
+{% if field.errors %}<span class="help-inline">{{ field.errors|join(', ') }}</span>{% endif %}
+{%- endmacro -%}
