@@ -2,16 +2,17 @@
 <label for="form_{{ name }}_id">{{ field.title }}</label>
 {%- endmacro -%}
 
-{%- macro text_attrs(field, name, prefix, widget) -%}
+{%- macro text_attrs(field, name, prefix, widget, class='') -%}
     name="{{ prefix }}{{ name }}"
     type="{{ widget.type }}"
     id="form_{{ name }}_id"
     placeholder="{{ field.placeholder }}"
+    class = {{ class }}
 
     {% if field.required %}required{% endif %}
     {% if field.locked %}readonly="on"{%endif%}
     {% if field.pattern %}pattern="{{ field.pattern }}"{% endif %}
-    {% if field.autofocus %}autofocus{% endif %} 
+    {% if field.autofocus %}autofocus{% endif %}
 {%- endmacro -%}
 
 {%- macro errors(field) -%}

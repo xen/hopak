@@ -51,7 +51,8 @@ class FormWrap(object):
         name = name or 'default'
         for form in self.forms:
             if form['name'] == name:
-                    return form
+                print(name, ': ', form)
+                return form
         if silent:
             return None
         else:
@@ -410,7 +411,7 @@ if specified in __key__"
     def render_form(self, env=None, state='edit', form=None, **kw):
         """ Render form method
         """
-        print(state)
+        #print(form, '-', self.subform)
         assert form is None or self.subform is None
         env = env or Environment(loader=PackageLoader('formgear'))
         template = env.get_template('form.html')

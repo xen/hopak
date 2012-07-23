@@ -4,6 +4,11 @@
   <p>{{ field.value }}</p>
 {%- endmacro %}
 
+{%- macro table_view(name, field, prefix) %}
+  {{ field.value }}
+{%- endmacro %}
+
+
 {%- macro edit(name, field) %}
 <div class="control-group {% if field.errors %}error{% endif %}">
     {{ b.label(field, name, **kwargs) }}
@@ -18,5 +23,8 @@
 
 {%- macro inline_edit(name, field) -%}
 <input {{ b.text_attrs(field, name, **kwargs) }}
-            value="{{ field.value or field.empty }}" />
+            value="{{ field.value or field.empty }}"
+        placeholder="{{ field.name }}"
+        class="pull-left"
+        {% if field.required %} required="required" {% endif %}/>
 {%- endmacro -%}
