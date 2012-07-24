@@ -409,7 +409,32 @@ if specified in __key__"
         mongo.remove(cls.kind(), _filter)
 
     def render_form(self, env=None, state='edit', form=None, **kw):
-        """ Render form method
+        """
+        Form rendering entry point.
+        This method can be used to render both forms (model subclasses)
+        and form instances (aka objects).
+        Returns plain HTML.
+
+
+        :param env: jinja2 envirement object used for template rendering.
+        This param *should* be ommited when calling from jinja2 templates.
+        Passed environment should have "form.html" template and widget
+        templates availible.
+
+        :param state: controls which state of form should be displayed.
+        Common states are "edit" and "table_edit"
+        Form states and field states are different concepts.
+        Form states are implemented as macros in "form.html" template
+
+        :param form: subform name used when rendering this form/model.
+        Subform is a named set (slice) of fields, specified in model.yaml.
+        This param should not be passed to forms or objects with subform
+        attribute set to value other than None
+        When no subforms defined in yaml, no param passed and no "subform"
+        attribute set, all fields are rendered
+
+        Default field set can be overriden by specifying "default" subform in
+        yaml.
         """
         #print(form, '-', self.subform)
         assert form is None or self.subform is None
