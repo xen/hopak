@@ -86,8 +86,9 @@ class Widget(object):
             return ''
 
         macro = getattr(self, '_macro_%s' % state, None)
-        if not macro:
-            return '' # XXX: output red text?
+        assert macro, 'Widget %s have no macro named %r' % (
+                self.__class__.__name__, state
+        )
 
         return macro(field=field, widget=self, **kw)
 
