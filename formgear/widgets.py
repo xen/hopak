@@ -74,6 +74,7 @@ class Widget(object):
     error_class = 'error'
     css = None
     value = ""
+    _type = "text"
 
     class Meta:
         abstract = True
@@ -91,6 +92,9 @@ class Widget(object):
         )
 
         return macro(field=field, widget=self, **kw)
+
+    def itype(self):
+        return self._type
 
     @classmethod
     def load_macros(cls):
@@ -131,6 +135,7 @@ class StringWidget(Widget):
     """
     InputWidget <input type="text"/>
     """
+    _type = 'text'
     alter_names = ('string',)
     template = 'string' # We will try to find text.html template in widgets directory
     value = ""
@@ -154,7 +159,7 @@ class PasswordWidget(StringWidget):
     """
     alter_names = ('password', 'passw')
     template = 'password'
-    type = 'password'
+    _type = 'password'
 
 class BooleanWidget(Widget):
     """" Simple checkbox """
@@ -166,7 +171,7 @@ class EmailWidget(StringWidget):
     """
     alter_names = ('email',)
     template = 'email'
-    type = 'email'
+    _type = 'email'
 
 class CheckboxWidget(Widget):
     """

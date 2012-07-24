@@ -3,11 +3,11 @@
 <label for="form_{{ name }}_id">{{ field.title }}</label>
 {%- endmacro -%}
 
-{%- macro text_attrs(field, name, prefix, widget, class='') -%}
+{%- macro text_attrs(field, name, prefix, widget, placeholder, class='') -%}
     name="{{ prefix }}{{ name }}"
-    type="{{ widget.type }}"
+    type="{{ widget.itype() }}"
     id="form_{{ name }}_id"
-    placeholder="{{ field.placeholder }}"
+    placeholder="{{ placeholder }}"
     class = {{ class }}
 
     {% if field.required %}required{% endif %}
