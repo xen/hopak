@@ -22,19 +22,3 @@
   {% endfor %}
   </tr>
 {%- endmacro -%}
-
-{%- macro render_search(form, url, action="Найти") %}
-  <div class="well">
-    <form action="{{ url }}" method="GET">
-      {% for field in form %}
-        {{ row_search(field, **kwargs) }}
-        <div class="pull-left">&nbsp;</div>
-      {% endfor %}
-      <button class="btn btn-primary pull-right" type="submit" class="btn">{{ action }}</button>
-    </form>
-  </div>
-{%- endmacro %}
-
-{%- macro row_search(field) %}
-  {{ field(class="pull-left", **kwargs)|safe }}
-{%- endmacro %}
