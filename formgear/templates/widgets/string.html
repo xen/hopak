@@ -11,6 +11,7 @@
 
 
 {%- macro edit(name, field) %}
+{{kwargs.____}} {#XXX#}
 <div class="control-group {% if field.errors %}error{% endif %}">
     {{ b.label(field, name, **kwargs) }}
     <div class="controls">

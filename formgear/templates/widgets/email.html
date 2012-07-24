@@ -6,8 +6,10 @@
 {%- endmacro %}
 
 {%- macro edit(name, field) %}
+{{kwargs.____}} {#XXX#}
 <div class="control-group {% if field.errors %}error{% endif %}">
     <label for="form_{{ name }}_id">{{ field.title }}</label>
+
     <div class="controls">
       <div class="input-prepend">
         <span class="add-on"><i class="icon-envelope"></i></span>

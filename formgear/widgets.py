@@ -90,7 +90,6 @@ class Widget(object):
         assert macro, 'Widget %s have no macro named %r' % (
                 self.__class__.__name__, state
         )
-
         return macro(field=field, widget=self, **kw)
 
     def itype(self):

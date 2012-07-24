@@ -51,7 +51,7 @@ class FormWrap(object):
         name = name or 'default'
         for form in self.forms:
             if form['name'] == name:
-                print(name, ': ', form)
+                #print(name, ': ', form)
                 return form
         if silent:
             return None
