@@ -133,7 +133,7 @@ class BaseField(object):
 
     __str__ = __unicode__
 
-    def __call__(self, state="view", **kwargs):
+    def __call__(self, state="edit", **kwargs):
         return self.widget.render(self, state, **kwargs)
 
     def clear(self):
