@@ -4,16 +4,19 @@
 {%- endmacro -%}
 
 {%- macro text_attrs(field, name, prefix, widget, placeholder, class='') -%}
-    name="{{ prefix }}{{ name }}"
-    type="{{ widget.itype() }}"
-    id="form_{{ name }}_id"
-    placeholder="{{ placeholder }}"
-    class = {{ class }}
-
-    {% if field.required %}required{% endif %}
-    {% if field.locked %}readonly="on"{%endif%}
-    {% if field.pattern %}pattern="{{ field.pattern }}"{% endif %}
-    {% if field.autofocus %}autofocus{% endif %}
+{{
+    {
+    'name': '%(prefix)s%(name)s'|format(prefix=prefix, name=name),
+    'type': widget.itype(),
+    'id':'form_%(name)s_id'|format(name=name),
+    'placeholder': placeholder,
+    'class': class,
+    'required': 'required' if field.required else None,
+    'readonly': 'on' if field.locked else None,
+    'pattern': field.pattern,
+    'autofocus': 'autofocus' if field.autofocus else None
+    }|xmlattr
+}}
 {%- endmacro -%}
 
 {%- macro errors(field) -%}

@@ -8,7 +8,7 @@
 {%- macro edit(name, field) %}
 {{kwargs.____}} {#XXX#}
 <div class="control-group {% if field.errors %}error{% endif %}">
-    <label for="form_{{ name }}_id">{{ field.title }}</label>
+    <label for="form_{{ name }}_id" class="control-label">{{ field.title }}</label>
 
     <div class="controls">
       <div class="input-prepend">
@@ -17,7 +17,7 @@
             value="{{ field.value or field.empty }}" />
       </div>
     {{ b.errors(field) }}
-    {% if field.description %}<span class="help-block">{{ field.description }}</span>{% endif %}
+    {% if field.description %}<p class="help-block">{{ field.description }}</p>{% endif %}
     </div>
 </div>
 {%- endmacro %}
