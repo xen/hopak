@@ -18,15 +18,12 @@
         <input {{ b.text_attrs(field, name, **kwargs) }}
             value="{{ field.value or field.empty }}" />
     {{ b.errors(field) }}
-    {% if field.description %}<span class="help-block">{{ field.description }}</span>{% endif %}
+    {% if field.description %}<p class="help-block">{{ field.description }}</p>{% endif %}
     </div>
 </div>
 {%- endmacro %}
 
 {%- macro inline_edit(name, field) -%}
 <input {{ b.text_attrs(field, name, **kwargs) }}
-            value="{{ field.value or field.empty }}"
-        placeholder="{{ field.name }}"
-        class="pull-left"
-        {% if field.required %} required="required" {% endif %}/>
+  value="{{ field.value or field.empty }}" />
 {%- endmacro -%}

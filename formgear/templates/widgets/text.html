@@ -1,6 +1,12 @@
+{% import "base_widget.html" as b %}
+
 {%- macro view(name, field, prefix) %}
   <h3>{{ name }}</h3>
   <p>{{ field.value }}</p> {# XXX: Processor filter here? #}
+{%- endmacro %}
+
+{%- macro table_view(name, field, prefix) %}
+{{ field.value|truncate }}
 {%- endmacro %}
 
 {%- macro edit(name, field, prefix) %}

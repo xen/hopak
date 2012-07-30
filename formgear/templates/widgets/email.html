@@ -5,15 +5,17 @@
   <p>{{ field.value }}</p>
 {%- endmacro %}
 
+{%- macro table_view(name, field, prefix) %}
+  {{ field.value }}
+{%- endmacro %}
+
 {%- macro edit(name, field) %}
 {{kwargs.____}} {#XXX#}
 <div class="control-group {% if field.errors %}error{% endif %}">
-    <label for="form_{{ name }}_id" class="control-label">{{ field.title }}</label>
-
+    {{ b.label(field, name, **kwargs) }}
     <div class="controls">
       <div class="input-prepend">
-        <span class="add-on"><i class="icon-envelope"></i></span>
-        <input {{ b.text_attrs(field, name, **kwargs) }}
+        <span class="add-on"><i class="icon-envelope"></i></span><input {{ b.text_attrs(field, name, **kwargs) }}
             value="{{ field.value or field.empty }}" />
       </div>
     {{ b.errors(field) }}
@@ -21,3 +23,8 @@
     </div>
 </div>
 {%- endmacro %}
+
+{%- macro inline_edit(name, field) -%}
+<input {{ b.text_attrs(field, name, **kwargs) }} 
+   value="{{ field.value or field.empty }}" />
+{%- endmacro -%}

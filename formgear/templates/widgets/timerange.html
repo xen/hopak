@@ -1,3 +1,5 @@
+{% import "base_widget.html" as b %}
+
 {%- macro view(name, field, prefix) %}
   <h3>{{ name }}</h3>
   {% if field.value %}
@@ -6,6 +8,11 @@
   <p>{{ field.empty }}</p>
   {% endif %}
 {%- endmacro %}
+
+{%- macro table_view(name, field, prefix) %}
+{{ field.value }}
+{%- endmacro %}
+
 
 {%- macro edit(name, field, prefix) %}
 {{kwargs.____}} {#XXX#}

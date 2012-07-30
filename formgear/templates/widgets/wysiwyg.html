@@ -1,6 +1,12 @@
+{% import "base_widget.html" as b %}
+
 {%- macro view(name, field, prefix) %}
   <h3>{{ name }}</h3>
   <p>{{ field.value }}</p> {# XXX: Processor filter here? #}
+{%- endmacro %}
+
+{%- macro table_view(name, field, prefix) %}
+{{ field.value|truncate }}
 {%- endmacro %}
 
 {%- macro edit(name, field, prefix) %}
@@ -25,3 +31,8 @@
     {% if field.description %}<span class="help-block">{{ field.description }}</span>{% endif %}
 </div>
 {%- endmacro %}
+
+{%- macro inline_edit(name, field) -%}
+<input {{ b.text_attrs(field, name, **kwargs) }}
+  value="{{ field.value or field.empty }}" />
+{%- endmacro -%}

@@ -1,3 +1,5 @@
+{% import "base_widget.html" as b %}
+
 {%- macro view(name, field, prefix) %}
   <h3>{{ name }}</h3>
   {% if field.value %}
@@ -7,6 +9,15 @@
   {% endif %}
 
 {%- endmacro %}
+
+{%- macro table_view(name, field, prefix) %}
+{% if field.value %}
+  {{ field.value.from }} - {{ field.value.to }} {{field.value.currency}}
+{% else %}
+  {{ field.empty }}
+{% endif %}
+{%- endmacro %}
+
 
 {%- macro edit(name, field, prefix) %}
 {{kwargs.____}} {#XXX#}
