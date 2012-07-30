@@ -26,3 +26,12 @@
   </div>
 </div>
 {%- endmacro %}
+
+{%- macro inline_edit(name, field) -%}
+<label for="form_{{ name }}_id">
+  <input {{ b.text_attrs(field, name, **kwargs) }}
+    value="{{ field.value or field.empty }}" />
+  {{name}}
+</label>
+
+{%- endmacro -%}

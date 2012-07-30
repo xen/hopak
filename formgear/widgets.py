@@ -202,6 +202,6 @@ class SelectWidget(Widget):
     """
     pass'''
 
-class WysiwygWidget(Widget):
-    alter_names = ('wysiwyg',)
-    template = 'wysiwyg'
+class MarkdownWidget(Widget):
+    alter_names = ('markdown',)
+    template = 'markdown'
