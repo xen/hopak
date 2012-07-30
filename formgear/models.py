@@ -333,10 +333,17 @@ class Model(object):
 
             field.locked = True
 
+    @classmethod
+    def __key_type(cls, value):
+        import bson
+        if not hasattr(cls, '__key__'):
+            return bson.objectid.ObjectId(value)
+
+        return value
 
     def key(self):
         if not hasattr(self.__class__, '__key__'):
-            return
+            return getattr(self, '_id', None)
 
         if isinstance(self.__key__, (list, tuple)):
             if self.__key__[0] == '_id':
@@ -396,7 +403,7 @@ if specified in __key__"
     @classmethod
     def get(cls, key=None, **kw):
         if not kw and key:
-            kw = {"_id": key}
+            kw = {"_id": cls.__key_type(key)}
 
         data = list(cls.all(**kw)[:1])
         if not data:
