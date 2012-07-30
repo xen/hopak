@@ -135,6 +135,10 @@ class MetaModel(type):
         cfg['_title'] = _title
 
         fields = []
+        key_fields = attrs.get('__key__', [])
+        if not isinstance(key_fields, (list,tuple)):
+            key_fields = []
+
         for field in cfg.pop('fields', []):
             if 'name' not in field:
                 raise ParsingException("Oops, we found nameless field!")
@@ -160,6 +164,9 @@ class MetaModel(type):
             wdgt = widgt_class(**widget_kw)
 
             file_resolve(field, "choices", ypath)
+
+            if field['name'] in key_fields:
+                field['required'] = True
 
             new_field = field_class(widget = wdgt, **field)
 
