@@ -420,6 +420,9 @@ if specified in __key__"
 
     @classmethod
     def delete(cls, _filter):
+        if not isinstance(filter, dict):
+            _filter = {"_id": cls.__key_type(_filter)}
+
         mongo.remove(cls.kind(), _filter)
 
     def render_form(self, env=None, state='edit', form=None, **kw):
