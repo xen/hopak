@@ -1,6 +1,6 @@
 {% import "base_widget.html" as b %}
 
-{%- macro view(name, field, prefix) %}
+{%- macro view(name, field, prefix, widget) %}
   <h3>{{ name }}</h3>
   <p>{{ field.value }}</p>
 {%- endmacro %}
