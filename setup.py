@@ -4,7 +4,7 @@
 from distutils.core import setup
 
 setup(name='formgear',
-      version='0.1',
+      version='0.3',
       description='Form, mongodbengine objects',
       author='Mikhail Kashkin',
       author_email='mkashkin@gmail.com',
@@ -16,4 +16,10 @@ setup(name='formgear',
           'jinja2',
           'python-dateutil == 1.5',
       ],
+      package_data = {
+        'formgear': [
+            'templates/*.html',
+            'templates/widgets/*.html',
+        ]
+    }
      )
