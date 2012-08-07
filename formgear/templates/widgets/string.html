@@ -2,7 +2,7 @@
 
 {%- macro view(name, field, prefix, widget) %}
   <h3>{{ name }}</h3>
-  <p>{{ field.value }}</p>
+  <p id="{{ "form_%(name)s_id"|format(name=name)}}" >{{ field.value }}</p>
 {%- endmacro %}
 
 {%- macro table_view(name, field, prefix) %}
