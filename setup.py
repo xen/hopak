@@ -4,8 +4,8 @@
 from distutils.core import setup
 
 setup(name='formgear',
-      version='0.2',
-      description='Form generator',
+      version='0.3.1',
+      description='Form, mongodbengine objects',
       author='Mikhail Kashkin',
       author_email='mkashkin@gmail.com',
       url='https://github.com/xen/formgear',
@@ -14,5 +14,12 @@ setup(name='formgear',
       license = "BSD",
       install_requires=[
           'jinja2',
+          'pyyaml'
       ],
+      package_data = {
+        'formgear': [
+            'templates/*.html',
+            'templates/widgets/*.html',
+        ]
+    }
      )

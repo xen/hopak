@@ -1,0 +1,24 @@
+{%- macro label(field, name, prefix, widget) -%}
+{{kwargs.____}} {#XXX#}
+<label for="form_{{ name }}_id">{{ field.title }}</label>
+{%- endmacro -%}
+
+{%- macro text_attrs(field, name, prefix, widget, class='') -%}
+{{
+    {
+    'name': '%(prefix)s%(name)s'|format(prefix=prefix, name=name),
+    'type': widget.itype(),
+    'id':'form_%(name)s_id'|format(name=name),
+    'placeholder': field.placeholder,
+    'class': class,
+    'required': 'required' if field.required else None,
+    'readonly': 'on' if field.locked else None,
+    'pattern': field.pattern,
+    'autofocus': 'autofocus' if field.autofocus else None
+    }|xmlattr
+}}
+{%- endmacro -%}
+
+{%- macro errors(field) -%}
+{% if field.errors %}<span class="help-inline">{{ field.errors|join(', ') }}</span>{% endif %}
+{%- endmacro -%}

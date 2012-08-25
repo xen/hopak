@@ -1,0 +1,43 @@
+title: User
+description: User model
+
+fields:
+    - name: email
+      title: Почта
+      widget: email
+      type: email
+    - name: password
+      title: Пароль
+      widget: password
+    - name: salt
+      widget:
+        type: string
+        hidden: true
+    - name: role
+      title: Роль
+    - name: created
+      title: Дата добавления
+      type: datetime
+    - name: phone
+      title: Телефон
+    - name: status
+      title: Статус
+      type: boolean
+    - name: social
+      title: Сосальный логин
+    - name: social_token
+      title: Токен
+    - name: name
+      title: Имя
+
+forms:
+    - name: login
+      fields: [email, password]
+    - name: reset_password
+      fields: [email]
+    - name: for_root
+      fields: [email, name, password, salt, phone]
+    - name: default
+      fields: [email, name, phone]
+    - name: search
+      fields: [email, name]

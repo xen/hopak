@@ -6,6 +6,7 @@
 import re
 from formgear.exceptions import NotFoundValidatorException, InvalidValue
 from registry import Registry
+import inspect
 
 import sys
 
@@ -42,8 +43,8 @@ class Required(BaseValidator):
     def __init__(self):
         pass
 
-    def __call__(self, node):
-        if not node:
+    def __call__(self, node, value):
+        if not value:
             raise InvalidValue(node, "is required")
 
 class Regex(BaseValidator):
@@ -116,3 +117,7 @@ class Min(BaseValidator):
         if self.value is not None:
             if self.value > value:
                 raise InvalidValue(node, self.text_err % (self.value, value,))
+
+
+def lookup(lvs={}):
+    return [ValidatorRegistry.resolve(validator)(**lvs[validator]) for validator in lvs]

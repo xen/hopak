@@ -34,6 +34,7 @@ class MetaWidget(type):
         newbornclass = super(MetaWidget, cls).__new__(cls, name, bases, attrs)
 
         if not abstract:
+            newbornclass.load_macros()
             #print("Register widget:", registername)
             WidgetRegistry.register(newbornclass, registername)
 
@@ -73,6 +74,7 @@ class Widget(object):
     error_class = 'error'
     css = None
     value = ""
+    _type = "text"
 
     class Meta:
         abstract = True
@@ -81,16 +83,29 @@ class Widget(object):
         self.__dict__.update(kw)
 
     def render(self, field, state, env=None, **kw):
-        """ Here is should be field rendering
-        """
-        if not env:
-            env = Environment(loader=FileSystemLoader(widgetspath))
-        tmplt = env.get_template(self.template+".html")
-        macro = getattr(tmplt.module, state, None)
-        if not macro:
-            return '' # XXX: output red text?
+        if self.hidden:
+            return ''
 
-        return macro(field=field, **kw)
+        macro = getattr(self, '_macro_%s' % state, None)
+        assert macro, 'Widget %s have no macro named %r' % (
+                self.__class__.__name__, state
+        )
+        return macro(field=field, widget=self, **kw)
+
+    def itype(self):
+        return self._type
+
+    @classmethod
+    def load_macros(cls):
+        env = Environment(loader=FileSystemLoader(widgetspath))
+        tmplt = env.get_template(cls.template+".html")
+        mod = tmplt.module
+        for macro_name, macro in mod.__dict__.items():
+            if macro_name[0] == '_':
+                continue
+
+            setattr(cls, '_macro_%s' % macro_name, macro)
+
 
 # html5 input fields, support status here http://www.w3schools.com/html5/html5_form_input_types.asp
 # color
@@ -119,6 +134,7 @@ class StringWidget(Widget):
     """
     InputWidget <input type="text"/>
     """
+    _type = 'text'
     alter_names = ('string',)
     template = 'string' # We will try to find text.html template in widgets directory
     value = ""
@@ -136,23 +152,25 @@ class TextWidget(Widget):
     template = 'text'
 
 
-class PasswordWidget(Widget):
+class PasswordWidget(StringWidget):
     """
     PasswordWidget <input type="password" />
     """
     alter_names = ('password', 'passw')
     template = 'password'
+    _type = 'password'
 
 class BooleanWidget(Widget):
     """" Simple checkbox """
     alter_names = ('boolean', 'bool')
     template = 'boolean'
 
-class EmailWidget(Widget):
+class EmailWidget(StringWidget):
     """ Email input filed
     """
     alter_names = ('email',)
     template = 'email'
+    _type = 'email'
 
 class CheckboxWidget(Widget):
     """
@@ -178,12 +196,12 @@ class SelectWidget(Widget):
     alter_names = ('select',)
     template = 'select'
 
-class ImageWidget(Widget):
+'''class ImageWidget(Widget):
     """
     http://blueimp.github.com/jQuery-File-Upload/
     """
-    pass
+    pass'''
 
-class WysiwygWidget(Widget):
-    alter_names = ('wysiwyg',)
-    template = 'wysiwyg'
+class MarkdownWidget(Widget):
+    alter_names = ('markdown',)
+    template = 'markdown'

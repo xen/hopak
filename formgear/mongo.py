@@ -3,12 +3,14 @@ from pymongo import Connection
 connection = Connection()
 db = connection['comfortly']
 
-def save(collection, data):
+def save(collection, data, _id=None):
     col = db[collection]
-    if '_id' in data:
-        col.update({"_id": data['_id']}, data, upsert=True, safe=True)
+    _id = _id or data.get('_id')
+    if not (_id is None):
+        col.update({"_id": _id}, data, upsert=True, safe=True)
+        return _id
     else:
-        col.insert(data)
+        return col.insert(data)
 
 def find(collection, **kw):
     col = db[collection]
@@ -17,5 +19,5 @@ def find(collection, **kw):
 
 def remove(collection, _filter):
 	col = db[collection]
-	print collection, _filter
+	#print collection, _filter
 	col.remove(_filter)

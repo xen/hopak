@@ -5,14 +5,17 @@ import datetime, re
 import controllers
 import widgets
 from registry import Registry
+from formgear.exceptions import InvalidValue
 
 class NotFoundFieldException(Exception):
     pass
+
 
 class FieldsRegistry(Registry):
     """ Registry needed to resolve fields from YAML file """
     fields = {}
     NotFound = NotFoundFieldException
+
 
 class MetaField(type):
     """
@@ -30,12 +33,14 @@ class MetaField(type):
 
         return newbornclass
 
+
 def init_partial(real):
     def init_partial(self, *a, **kw):
         self._partial = a, kw
         return real(self, *a, **kw)
 
     return init_partial
+
 
 class BaseField(object):
     """ BaseField is very similar to MongoEngine fields.
@@ -73,7 +78,7 @@ class BaseField(object):
         self.unique_with = unique_with
         self.default = default
 
-        self.validators = validators[:]
+        self.validators = controllers.lookup(validators)
         if controllers.Required in self.validators:
             self.required = True
         if required:
@@ -90,7 +95,18 @@ class BaseField(object):
     def validate(self):
         """Perform validation on a value.
         """
-        return True
+        ret = True
+        self.errors = []
+        for validator in self.validators:
+            if isinstance(validator, type):
+                validator = validator()
+
+            try:
+                validator(self, self.value)
+            except InvalidValue, e:
+                ret = False
+                self.errors.append(e.args[1])
+        return ret
 
     def reinstance(self):
         a, kw = self._partial
@@ -117,7 +133,7 @@ class BaseField(object):
 
     __str__ = __unicode__
 
-    def __call__(self, state="view", **kwargs):
+    def __call__(self, state="edit", **kwargs):
         return self.widget.render(self, state, **kwargs)
 
     def clear(self):
@@ -150,6 +166,7 @@ class BaseField(object):
 
         return val
 
+
 class StringField(BaseField):
     """ Simple string
     """
@@ -161,6 +178,7 @@ class StringField(BaseField):
         self.max_length = max_length
         self.min_length = min_length
         super(StringField, self).__init__(**kwargs)
+
 
 class TextField(BaseField):
     """ Plain text field.
@@ -185,6 +203,7 @@ class DateField(BaseField):
         """
         pass
 
+
 class DateTimeField(BaseField):
 
     alter_names = ('datetime',)
@@ -204,7 +223,7 @@ class DateTimeField(BaseField):
 
         from dateutil import parser
         try:
-            self.value = parser.parse(self.value)
+            self.value = parser.parse(self.value or '')
         except ValueError:
             return
 
@@ -214,17 +233,32 @@ class DateTimeField(BaseField):
 class TimeField(BaseField):
     alter_names = ('time', )
 
+
 class IntegerField(BaseField):
     alter_names = ('int', 'integer', )
+
 
 class BooleanField(BaseField):
     alter_names = ('bool', 'boolean', )
 
+    def shortcut(self, value):
+        return True, bool(value)
+
 class EmailField(BaseField):
     alter_names = ('email', )
 
+    def validate(self):
+        ret = '@' in self.value
+        if not ret:
+            self.errors = [
+                    u"Wrong email format",
+            ]
+        return ret
+
+
 class FloatField(BaseField):
     alter_names = ('float', )
+
 
 class URLField(BaseField):
     alter_names = ('url', 'link', )
@@ -247,15 +281,19 @@ class URLField(BaseField):
 class FileField(BaseField):
     alter_names = ('file', 'blob', )
 
+
 class ImageField(BaseField):
     alter_names = ('img', 'image', )
+
 
 class GeoPointField(BaseField):
     alter_names = ('geo', 'geopoint', )
 
+
 class TimerangeField(BaseField):
     alter_name = ('timerange')
     widget = widgets.TimerangeWidget
+
 
 class CheckboxField(BaseField):
     alter_names = ('checkbox',)
@@ -276,8 +314,20 @@ class CheckboxField(BaseField):
         else:
             self._value.append(val)
 
-
     value = property(BaseField.get_value, set_value)
+
 
 class StructField(BaseField):
     alter_names = ('struct',)
+
+
+class PathField(StringField):
+    alter_names = ('pathfield',)
+
+    def set_value(self, val):
+        if val:
+            if not val.startswith("/"):
+                val = "/%s" % (val,)
+            self._value = val
+
+    value = property(BaseField.get_value, set_value)

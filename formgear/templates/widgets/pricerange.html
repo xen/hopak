@@ -1,4 +1,6 @@
-{%- macro view(name, field) %}
+{% import "base_widget.html" as b %}
+
+{%- macro view(name, field, prefix) %}
   <h3>{{ name }}</h3>
   {% if field.value %}
   <p>{{ field.value.from }} - {{ field.value.to }} {{field.value.currency}}</p>
@@ -8,16 +10,26 @@
 
 {%- endmacro %}
 
-{%- macro edit(name, field) %}
+{%- macro table_view(name, field, prefix) %}
+{% if field.value %}
+  {{ field.value.from }} - {{ field.value.to }} {{field.value.currency}}
+{% else %}
+  {{ field.empty }}
+{% endif %}
+{%- endmacro %}
+
+
+{%- macro edit(name, field, prefix) %}
+{{kwargs.____}} {#XXX#}
 <div class="control-group {% if field.errors %}error{% endif %}">
     <label for="form_{{ name }}_id">{{ field.title }}</label>
-    <input name="{{ name }}__from" type="text" id="form_{{ name }}_id"
+    <input name="{{ prefix }}{{ name }}__from" type="text" id="form_{{ name }}_id"
        value="{{ field.value.from or field.empty }}" {% if field.required %}required{% endif %}
        pattern="\d+(\.\d{2})?" placeholder="120.00" maxlength="6" /> - 
-    <input name="{{ name }}__to" type="text" id="form_{{ name }}_id"
+    <input name="{{ prefix }}{{ name }}__to" type="text" id="form_{{ name }}_id"
        value="{{ field.value.to or field.empty }}" {% if field.required %}required{% endif %}
        pattern="\d+(\.\d{2})?" placeholder="240.00" maxlength="6" />
-    <select name="{{ name }}__currency" type="text" id="form_{{ name }}_id">
+    <select name="{{ prefix }}{{ name }}__currency" type="text" id="form_{{ name }}_id">
       <option value=""> - </option>
       {% for currency, name in [['UAH', 'грн.'],['USD', 'дол.'], ['EUR', 'евро']] %}
       <option {% if currency == field.value.currency %}selected{%endif%}

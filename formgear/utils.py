@@ -9,8 +9,8 @@ def find_yaml(yaml_list, dirname, names):
     Callback for `yamls_files` function
     dirname - current directory name, that `yamls_files` walks
     names - list of dirs and files in the `dirname` directory
-    yaml_list - accumulator from caller of callback function, 
-                in this variable we agrigrate obtained files 
+    yaml_list - accumulator from caller of callback function,
+                in this variable we agrigrate obtained files
     """
     for name in names:
         path_to_file = os.path.join(dirname, name)
@@ -46,7 +46,6 @@ def widgets_path():
     widget_path_list = []
     for cur_path in sys.path:
         os.path.walk(cur_path, find_widget_template, widget_path_list)
-    print(widget_path_list)
     return widget_path_list
 
 
@@ -69,4 +68,20 @@ def file_resolve(field, name, ypath):
         choices.append((key, val))
 
     field[name] = choices
+
+def form_dict(form):
+    ret = {}
+    for key, val in form:
+        container = ret
+        while '__' in key:
+            ckey, key = key.split('__', 1)
+            if ckey.isdigit():
+                ckey = int(ckey)
+            _container = container.get(ckey, {})
+            container[ckey] = _container
+            container = _container
+
+        container[key] = val
+
+    return ret
 
