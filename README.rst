@@ -50,9 +50,9 @@ More
 
 Links:
 
-- ``formgear`` page on PyPI: `http://pypi.python.org/pypi/formgear/ 
+* ``formgear`` page on PyPI: `http://pypi.python.org/pypi/formgear/ 
   <http://pypi.python.org/pypi/formgear//>`_
-- Github page: `https://github.com/xen/formgear 
+* Github page: `https://github.com/xen/formgear 
   <https://github.com/xen/formgear>`_
 
 More documentation is approaching.
