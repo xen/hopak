@@ -1,7 +1,7 @@
 Formgear
 #########
 
-Main idea behind `formgear` allow iteratively create data models in easy 
+Main idea behind ``formgear`` allow iteratively create data models in easy 
 readeable form and use them as part of your websites. At this moment only 
 MongoDB is allowed. 
 
@@ -16,7 +16,7 @@ But we are living in 21 century, have decoded DNA, pushing frontier into
 space, diging into core of the atoms and listening dubstep! Why we must to 
 write all that crap? Why computers cann't just do all this stuff?
 
-So that is why we invent `formgear`. Because we want computers to do that they
+So that is why we invent ``formgear``. Because we want computers to do that they
 supposed to do. 
 
 `formgear` is only part of this effort, but here is already some results. So,
@@ -41,15 +41,19 @@ This file is enough to use it as model in your python code::
     class User(Model):
         __yaml__ = 'user.yaml'
 
-`formgear` is only a library for bigger framework, if you deside to use whole 
+``formgear`` is only a library for bigger framework, if you deside to use whole 
 stack then you will get site with admin section including list, edit, add, 
 search, delete sections for each models.
 
 More
 ======
 
-`formgear` page on PyPI: http://pypi.python.org/pypi/formgear/
-Github page: https://github.com/xen/formgear
+Links:
+
+- ``formgear`` page on PyPI: `http://pypi.python.org/pypi/formgear/ 
+  <http://pypi.python.org/pypi/formgear//>`_
+- Github page: `https://github.com/xen/formgear 
+  <https://github.com/xen/formgear>`_
 
 More documentation is approaching.
 
