@@ -4,7 +4,7 @@
 from distutils.core import setup
 
 setup(name='formgear',
-      version='0.3.2',
+      version='0.3.3',
       description='Form, mongodbengine objects',
       long_description = open("README.rst").read(),
       author='Mikhail Kashkin',
