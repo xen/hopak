@@ -110,9 +110,10 @@ class MetaModel(type):
             # __yaml__ = "order" or class Order(Models):
             ypath = attrs.get('__yaml__') or name.lower()
 
-            ypath = yamlsfiles.get(ypath, ypath)
-            if not os.access(ypath, 0):
-                raise YamlEntryNotFoundInListException
+            if not ypath.endswith('.yaml'):
+                ypath = yamlsfiles.get(ypath, ypath)
+                if not os.access(ypath, 0):
+                    raise YamlEntryNotFoundInListException
 
             cfg = yaml.safe_load(open(ypath))
 
