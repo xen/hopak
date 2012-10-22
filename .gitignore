@@ -8,3 +8,4 @@ etc
 .env/
 build/
 *~
+develop-eggs
