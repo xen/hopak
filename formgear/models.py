@@ -110,9 +110,10 @@ class MetaModel(type):
             # __yaml__ = "order" or class Order(Models):
             ypath = attrs.get('__yaml__') or name.lower()
 
-            ypath = yamlsfiles.get(ypath, ypath)
-            if not os.access(ypath, 0):
-                raise YamlEntryNotFoundInListException
+            if not ypath.endswith('.yaml'):
+                ypath = yamlsfiles.get(ypath, ypath)
+                if not os.access(ypath, 0):
+                    raise YamlEntryNotFoundInListException
 
             cfg = yaml.safe_load(open(ypath))
 
@@ -431,7 +432,6 @@ if specified in __key__"
         This method can be used to render both forms (model subclasses)
         and form instances (aka objects).
         Returns plain HTML.
-
 
         :param env: jinja2 envirement object used for template rendering.
         This param *should* be ommited when calling from jinja2 templates.

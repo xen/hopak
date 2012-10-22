@@ -1,8 +1,10 @@
+from __future__ import absolute_import
 from formgear.models import Model, ModelRegistry
 from formgear.fields import FieldsRegistry
 import logging
 import yaml
 
+from . import models
 
 def field_comparison_helper(collect_field_classes, source_yaml):
 
