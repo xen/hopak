@@ -4,7 +4,7 @@ from formgear.fields import FieldsRegistry
 import logging
 import yaml
 
-import tests.models
+from . import models
 
 def field_comparison_helper(collect_field_classes, source_yaml):
 
