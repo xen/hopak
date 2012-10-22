@@ -1,6 +1,9 @@
 class NotFoundException(Exception):
     pass
 
+class DublicateRegistryEntryException(Exception):
+    pass
+
 class Registry(object):
     """ Registry is singleton wich maintain list of registered classes an 
     allow to quick resolve into class by simple key search.
@@ -48,6 +51,10 @@ class Registry(object):
     >>> TestRegistry.list()
     ['test1', 'test2', 'testobject']
 
+    >>> TestRegistry.unregister('test2')
+    >>> TestRegistry.list()
+    ['test1', 'testobject']
+
 
     """
     class __metaclass__(type):
@@ -70,12 +77,33 @@ class Registry(object):
             raise Exc('Key %r not found in %r' % (name, cls))
 
     @classmethod
+    def lookup(cls, name):
+        """ le Check da existence """
+        return cls.data.has_key(name)
+
+    @classmethod
     def register(cls, val, name):
-        # XXX: I'm not sure about that. Don't looks healthy
         for x in getattr(val, 'alter_names', []):
-            cls.data[x] = val
+            if not cls.data.has_key(x):
+                cls.data[x] = val
+            else:
+                raise DublicateRegistryEntryException
 
         cls.data[name] = val
+
+    @classmethod
+    def unregister(cls, what):
+        """ Remove items from registry """
+        if type(what) == str:
+            del cls.data[what]
+        elif type(what) == list:
+            for i in what:
+                assert type(i) == str
+                del cls.data[i]
+        else:
+            # some duck typing
+            for i in getattr(what, 'alter_names', []):
+                del cls.data[i]
 
     @classmethod
     def list(cls):
