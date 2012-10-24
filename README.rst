@@ -1,6 +1,8 @@
 Formgear
 #########
 
+.. image:: https://secure.travis-ci.org/xen/formgear.png
+
 Main idea behind ``formgear`` allow iteratively create data models in easy 
 readeable form and use them as part of your websites. At this moment only 
 MongoDB is allowed. 
