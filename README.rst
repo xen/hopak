@@ -1,6 +1,9 @@
 Formgear
 #########
 
+.. image:: https://secure.travis-ci.org/xen/formgear.png
+    :target: https://travis-ci.org/#!/xen/formgear
+
 Main idea behind ``formgear`` allow iteratively create data models in easy 
 readeable form and use them as part of your websites. At this moment only 
 MongoDB is allowed. 
@@ -58,7 +61,7 @@ More
 Links:
 
 * ``formgear`` page on PyPI: `http://pypi.python.org/pypi/formgear/ 
-  <http://pypi.python.org/pypi/formgear//>`_
+  <http://pypi.python.org/pypi/formgear/>`_
 * Github page: `https://github.com/xen/formgear 
   <https://github.com/xen/formgear>`_
 

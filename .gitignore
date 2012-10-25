@@ -9,3 +9,4 @@ etc
 build/
 *~
 develop-eggs
+.coverage

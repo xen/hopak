@@ -38,10 +38,10 @@ class FormWrap(object):
     def get(self, name, silent=None):
         """ Return form fields as dict for a class:
 
-            >>> model.form(name='default')
-            [('email', <formgear.fields.StringField object at 4529231184>), ...)]
-            >>> model.form(name='search')
-            KeyError: "Form 'search' not found for model <class 'admin.auth.models.User'>"
+            # >>> model.form(name='default')
+            # [('email', <formgear.fields.StringField object at 4529231184>), ...)]
+            # >>> model.form(name='search')
+            # KeyError: "Form 'search' not found for model <class 'admin.auth.models.User'>"
 
         There is always 'default' form which contaions all model field.
 
