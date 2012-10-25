@@ -45,6 +45,13 @@ This file is enough to use it as model in your python code::
 stack then you will get site with admin section including list, edit, add, 
 search, delete sections for each models.
 
+Changes
+========
+
+0.3.4: 
+
+- Started this log.
+
 More
 ======
 
@@ -56,4 +63,5 @@ Links:
   <https://github.com/xen/formgear>`_
 
 More documentation is approaching.
+
 

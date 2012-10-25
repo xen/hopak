@@ -5,29 +5,29 @@ class DublicateRegistryEntryException(Exception):
     pass
 
 class Registry(object):
-    """ Registry is singleton wich maintain list of registered classes an 
+    """ Registry is singleton wich maintain list of registered classes and
     allow to quick resolve into class by simple key search.
 
     >>> from formgear.registry import Registry, NotFoundException
     >>> class NotFoundTestException(Exception):
     ...     pass
-    ... 
+    ...
 
-    Sample class 
+    Sample class
 
     >>> class TestRegistry(Registry):
     ...     NotFound = NotFoundTestException
-    ... 
-    >>> type(TestRegistry)                            
+    ...
+    >>> type(TestRegistry)
     <class 'formgear.registry.__metaclass__'>
 
     >>> assert isinstance(TestRegistry, object)
 
-    Actual usage example 
+    Actual usage example
 
     >>> class TestObject(object):
     ...     alter_names = ('test1', 'test2', )
-    ... 
+    ...
     >>> TestRegistry.register(TestObject, 'testobject')
     >>> TestRegistry.resolve('testobject')
     <class 'formgear.registry.TestObject'>

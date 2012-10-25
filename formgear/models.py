@@ -112,8 +112,8 @@ class MetaModel(type):
 
             if not ypath.endswith('.yaml'):
                 ypath = yamlsfiles.get(ypath, ypath)
-                if not os.access(ypath, 0):
-                    raise YamlEntryNotFoundInListException
+            if not os.access(ypath, 0):
+                raise YamlEntryNotFoundInListException
 
             cfg = yaml.safe_load(open(ypath))
 
