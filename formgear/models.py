@@ -3,7 +3,6 @@
 from __future__ import print_function
 import os
 import yaml
-import mongo
 
 from formgear.fields import FieldsRegistry
 from formgear.widgets import WidgetRegistry

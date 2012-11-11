@@ -1,32 +1,29 @@
 # -*- coding: utf-8 -*-
 #
 
-class BaseDatasource(object):
+class BaseDS(object):
     """ Data source interface
     """
 
     def __init__(self, conn):
         self.conn = conn
 
-    def put(self):
+    def save(self, id):
         raise NotImplemented
 
-    def get(self):
+    def get(self, id):
         raise NotImplemented
 
-    def get_by_id(self):
+    def delete(self, id):
         raise NotImplemented
 
-    def delete(self):
+    def save_multi(self, ids=[]):
         raise NotImplemented
 
-    def put_multi(self):
+    def get_multi(self, ids=[]):
         raise NotImplemented
 
-    def get_multi(self):
-        raise NotImplemented
-
-    def del_multi(self):
+    def delete_multi(self, ids=[]):
         raise NotImplemented
 
     def query(self):
@@ -35,8 +32,6 @@ class BaseDatasource(object):
     def count(self):
         raise NotImplemented
 
-    def commit(self):
+    def disconnect(self):
         raise NotImplemented
 
-    def rollback(self):
-        raise NotImplemented
