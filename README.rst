@@ -51,6 +51,10 @@ search, delete sections for each models.
 Changes
 ========
 
+0.3.5:
+
+- added independed data sources, but atm still have only mongodb datasource
+
 0.3.4: 
 
 - Started this log.
