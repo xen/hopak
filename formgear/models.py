@@ -9,6 +9,7 @@ from formgear.widgets import WidgetRegistry
 from registry import Registry
 from formgear.exceptions import *
 from formgear.utils import yamls_files, file_resolve
+from formgear.ds import get_datasource
 
 from jinja2 import Environment, PackageLoader
 
@@ -386,9 +387,17 @@ if specified in __key__"
 
         assert False, "Who is Mr. __key__?"
 
-    def save(self):
+    def save(self, datasource=None):
+        ds = None
+        if datasource:
+            ds = None
+        elif hasattr(self, 'datasource'):
+            ds = self.datasource
+        else:
+            ds = get_datasource()
+
         _id = getattr(self, '_id', None)
-        self._id = mongo.save(self.kind(), self.to_mongo(), _id)
+        self._id = ds.save(self.kind(), self.to_mongo(), _id)
         return self._id
 
     @classmethod
