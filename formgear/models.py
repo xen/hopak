@@ -207,12 +207,17 @@ class Model(object):
     class Meta:
         abstract = True
 
-    def __init__(self, data=None, subform=None, _id=None, _raw=False, **kw):
+    def __init__(self, data=None, subform=None, _id=None, _raw=False, datasource=None, **kw):
         assert data is None or not kw, 'Pass data in one way'
         if data:
             kw = data
         if _id:
             self._id = _id
+
+        if datasource:
+            self.datasource = datasource
+        else:
+            self.datasource = get_datasource()
 
         self.subform = subform
         form = self.form.get(subform)
@@ -387,7 +392,7 @@ if specified in __key__"
     def save(self, datasource=None):
         ds = None
         if datasource:
-            ds = None
+            ds = datasource
         elif hasattr(self, 'datasource'):
             ds = self.datasource
         else:
@@ -398,11 +403,17 @@ if specified in __key__"
         return self._id
 
     @classmethod
-    def all(cls, **kw):
+    def all(cls, datasource=None, **kw):
+        ds = None
+        if datasource:
+            ds = datasource
+        else:
+            ds = get_datasource()
+
         return [
                 cls(_raw=True, **data)
                 for data in
-                mongo.find(cls.kind(), **kw)
+                ds.find(cls.kind(), **kw)
         ]
 
     @classmethod
@@ -425,11 +436,15 @@ if specified in __key__"
         return data[0]
 
     @classmethod
-    def delete(cls, _filter):
+    def delete(cls, _filter, datasource=None):
         if not isinstance(filter, dict):
             _filter = {"_id": cls.__key_type(_filter)}
-
-        mongo.remove(cls.kind(), _filter)
+        ds = None
+        if datasource:
+            ds = datasource
+        else:
+            ds = get_datasource()
+        ds.remove(cls.kind(), _filter)
 
     def render_form(self, env=None, state='edit', form=None, **kw):
         """
