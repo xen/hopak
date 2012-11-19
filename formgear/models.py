@@ -8,12 +8,10 @@ from formgear.fields import FieldsRegistry
 from formgear.widgets import WidgetRegistry
 from registry import Registry
 from formgear.exceptions import *
-from formgear.utils import yamls_files, file_resolve
+from formgear.utils import rel, yamls_files, file_resolve
 from formgear.ds import get_datasource
 
 from jinja2 import Environment, PackageLoader
-
-__author__ = 'xen'
 
 yamlsfiles = yamls_files()
 
@@ -109,10 +107,9 @@ class MetaModel(type):
             # try to find out by __yaml__ or by class name
             # __yaml__ = "order" or class Order(Models):
             ypath = attrs.get('__yaml__') or name.lower()
-
             if not ypath.endswith('.yaml'):
                 ypath = yamlsfiles.get(ypath, ypath)
-            if not os.access(ypath, 0):
+            if not os.access(ypath, 0) or not os.access(rel(ypath), 0):
                 raise YamlEntryNotFoundInListException
 
             cfg = yaml.safe_load(open(ypath))

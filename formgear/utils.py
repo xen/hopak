@@ -3,6 +3,16 @@ import logging
 import os.path
 import re
 
+def rel(_file, *x):
+    return os.path.normpath(
+        os.path.join(
+            os.path.abspath(
+                os.path.dirname(_file)
+            ), *x
+        )
+    )
+
+#rel(os.getcwd(), os.path.dirname(__file__), 'post.yaml')
 
 def find_yaml(yaml_list, dirname, names):
     """
