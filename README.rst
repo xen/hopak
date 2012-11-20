@@ -2,7 +2,7 @@ Formgear
 #########
 
 .. image:: https://secure.travis-ci.org/xen/formgear.png
-    :target: https://travis-ci.org/#!/xen/formgear
+    :target: https://travis-ci.org/xen/formgear
 
 Main idea behind ``formgear`` allow iteratively create data models in easy 
 readable form and use them as part of your websites. At this moment only 
