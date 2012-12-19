@@ -3,7 +3,7 @@ Hopak
 
 Formely project name was ``formgear``.
 
-.. image:: https://secure.travis-ci.org/xen/hopak.png
+.. image:: https://api.travis-ci.org/xen/hopak.png?branch=master
     :target: https://travis-ci.org/xen/hopak
 
 Main idea behind ``hopak`` allow iteratively create data models in easy 
@@ -52,6 +52,10 @@ search, delete sections for each models.
 
 Changes
 ========
+
+0.4:
+
+- renamed from ``formgear`` to ``hopak``
 
 0.3.5:
 
