@@ -1,0 +1,38 @@
+{% import "base_widget.html" as b %}
+
+{%- macro view(name, field, prefix) %}
+  <h3>{{ name }}</h3>
+  <p>{{ field.value }}</p> {# XXX: Processor filter here? #}
+{%- endmacro %}
+
+{%- macro table_view(name, field, prefix) %}
+{{ field.value|truncate }}
+{%- endmacro %}
+
+{%- macro edit(name, field, prefix) %}
+{{kwargs.____}} {#XXX#}
+<script type="text/javascript">
+   $(document).ready(function() {
+      var converter1 = Markdown.getSanitizingConverter();
+      var editor1 = new Markdown.Editor(converter1);
+      editor1.run();
+   });
+</script>
+<div class="control-group {% if field.errors %}error{% endif %}">
+    <label for="markItUp">{{ field.title }}</label>
+    <div class="wmd-panel">
+      <div id="wmd-button-bar"></div>
+      <textarea name="{{ prefix }}{{ name }}" placeholder="{{ field.placeholder }}" class="wmd-input" id="wmd-input"
+        {% if field.required %}required{% endif %} 
+        {% if field.autofocus %}autofocus{% endif %}>{{ field.value }}</textarea>
+    </div>
+    <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
+    {% if field.errors %}<span class="help-inline">{{ field.errors|join(', ') }}</span>{% endif %}
+    {% if field.description %}<span class="help-block">{{ field.description }}</span>{% endif %}
+</div>
+{%- endmacro %}
+
+{%- macro inline_edit(name, field) -%}
+<input {{ b.text_attrs(field, name, **kwargs) }}
+  value="{{ field.value or field.empty }}" />
+{%- endmacro -%}

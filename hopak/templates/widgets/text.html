@@ -1,0 +1,25 @@
+{% import "base_widget.html" as b %}
+
+{%- macro view(name, field, prefix) %}
+  <h3>{{ name }}</h3>
+  <p>{{ field.value }}</p> {# XXX: Processor filter here? #}
+{%- endmacro %}
+
+{%- macro table_view(name, field, prefix) %}
+{{ field.value|truncate }}
+{%- endmacro %}
+
+{%- macro edit(name, field, prefix) %}
+{{kwargs.____}} {#XXX#}
+<div class="control-group {% if field.errors %}error{% endif %}">
+    <label for="form_{{ name }}_id">{{ field.title }}</label>
+    <div class="controls">
+      <textarea name="{{ prefix }}{{ name }}" placeholder="{{ field.placeholder }}" id="form_{{ name }}_id" class="input-xlarge"
+                  {% if field.required %}required{% endif %}
+                  {% if field.autofocus %}autofocus{% endif %}
+                  rows="4" cols="50">{{ field.value or field.empty }}</textarea>
+    {% if field.errors %}<span class="help-inline">{{ field.errors|join(', ') }}</span>{% endif %}
+    {% if field.description %}<span class="help-block">{{ field.description }}</span>{% endif %}
+    </div>
+</div>
+{%- endmacro %}

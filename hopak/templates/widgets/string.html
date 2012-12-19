@@ -1,0 +1,29 @@
+{% import "base_widget.html" as b %}
+
+{%- macro view(name, field, prefix, widget) %}
+  <h3>{{ name }}</h3>
+  <p id="{{ "form_%(name)s_id"|format(name=name)}}" >{{ field.value }}</p>
+{%- endmacro %}
+
+{%- macro table_view(name, field, prefix) %}
+  {{ field.value }}
+{%- endmacro %}
+
+
+{%- macro edit(name, field) %}
+{{kwargs.____}} {#XXX#}
+<div class="control-group {% if field.errors %}error{% endif %}">
+    {{ b.label(field, name, **kwargs) }}
+    <div class="controls">
+        <input {{ b.text_attrs(field, name, **kwargs) }}
+            value="{{ field.value or field.empty }}" />
+    {{ b.errors(field) }}
+    {% if field.description %}<p class="help-block">{{ field.description }}</p>{% endif %}
+    </div>
+</div>
+{%- endmacro %}
+
+{%- macro inline_edit(name, field) -%}
+<input {{ b.text_attrs(field, name, **kwargs) }}
+  value="{{ field.value or field.empty }}" />
+{%- endmacro -%}

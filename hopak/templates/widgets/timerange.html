@@ -1,0 +1,32 @@
+{% import "base_widget.html" as b %}
+
+{%- macro view(name, field, prefix) %}
+  <h3>{{ name }}</h3>
+  {% if field.value %}
+  <p>{{ field.value.from }} - {{ field.value.to }}</p>
+  {% else %}
+  <p>{{ field.empty }}</p>
+  {% endif %}
+{%- endmacro %}
+
+{%- macro table_view(name, field, prefix) %}
+{{ field.value }}
+{%- endmacro %}
+
+
+{%- macro edit(name, field, prefix) %}
+{{kwargs.____}} {#XXX#}
+<div class="control-group {% if field.errors %}error{% endif %}">
+    <label for="form_{{ name }}_id">{{ field.title }}</label>
+    <div class="controls">
+    <input name="{{ prefix }}{{ name }}__from" type="text" id="form_{{ name }}_from_id"
+       value="{{ field.value.from or field.empty }}" {% if field.required %}required{% endif %}
+       pattern="\d{1,2}:\d{2}" placeholder="2:00" maxlength="5" /> - 
+    <input name="{{ prefix }}{{ name }}__to" type="text" id="form_{{ name }}_to_id"
+       value="{{ field.value.to or field.empty }}" {% if field.required %}required{% endif %}
+       pattern="\d{1,2}:\d{2}" placeholder="20:00" maxlength="5" />
+    {% if field.errors %}<span class="help-inline">{{ field.errors|join(', ') }}</span>{% endif %}
+    {% if field.description %}<span class="help-block">{{ field.description }}</span>{% endif %}
+    </div>
+</div>
+{%- endmacro %}

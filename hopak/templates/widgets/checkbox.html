@@ -1,0 +1,35 @@
+{% import "base_widget.html" as b %}
+
+{%- macro view(name, field, prefix) %}
+  <h3>{{ name }}</h3>
+  <p>{{ field.value | join(', ') }}</p>
+{%- endmacro %}
+
+{%- macro table_view(name, field, prefix) %}
+{{ field.value|join(", ")|truncate}}
+{%- endmacro %}
+
+
+{%- macro edit(name, field, prefix) %}
+{{kwargs.____}} {#XXX#}
+<div class="control-group {% if field.errors %}error{% endif %}">
+  {{ b.label(field, name, **kwargs) }}
+  <div class="controls">
+    {% if field.choices %}
+    {% for key, val in field.choices %}
+      <label class="checkbox">
+        <input name="{{ prefix }}{{ name }}" type="checkbox"
+          value="{{ key }}" {% if key in field.value %}checked{% endif %} />
+        {{ val }}
+      </label>
+    {% endfor %}
+    {% else %}
+      <label class="checkbox">
+      <input name="{{ prefix }}{{ name }}" type="checkbox" id="form_{{ name }}_id"
+             value="1" /> {{ field.title }}</label>
+    {% endif %}
+  </div>
+  {% if field.errors %}<span class="help-inline">{{ field.errors|join(', ') }}</span>{% endif %}
+  {% if field.description %}<span class="help-block">{{ field.description }}</span>{% endif %}
+  </div>
+{%- endmacro %}

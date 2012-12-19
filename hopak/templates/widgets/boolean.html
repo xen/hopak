@@ -1,0 +1,37 @@
+{% import "base_widget.html" as b %}
+
+{%- macro view(name, field, prefix) %}
+  <h3>{{ name }}</h3>
+  <p>{% if field.value %}<i class="icon-ok"></i>{% else %}<i class="icon-remove"></i>{% endif %}</p>
+{%- endmacro %}
+
+{%- macro table_view(name, field, prefix) %}
+{% if field.value %}
+  <i class="icon-ok"></i>
+{% else %}
+  <i class="icon-remove"></i>
+{% endif %}
+{%- endmacro %}
+
+{%- macro edit(name, field, prefix) %}
+{{kwargs.____}} {#XXX#}
+<div class="control-group {% if field.errors %}error{% endif %}">
+  {{ b.label(field, name, **kwargs) }}
+  <div class="controls">
+    <label class="checkbox">
+      <input type="checkbox" id="form_{{ name }}_id" value="1" {% if field.value %}checked{% endif %}>
+    </label>
+    {% if field.errors %}<span class="help-inline">{{ field.errors|join(', ') }}</span>{% endif %}
+    {% if field.description %}<span class="help-block">{{ field.description }}</span>{% endif %}
+  </div>
+</div>
+{%- endmacro %}
+
+{%- macro inline_edit(name, field) -%}
+<label for="form_{{ name }}_id">
+  <input {{ b.text_attrs(field, name, **kwargs) }}
+    value="{{ field.value or field.empty }}" />
+  {{name}}
+</label>
+
+{%- endmacro -%}

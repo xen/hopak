@@ -1,0 +1,39 @@
+{% import "base_widget.html" as b %}
+
+{%- macro view(name, field, prefix) %}
+  <h3>{{ name }}</h3>
+  <p>{{ field.value }}</p>
+{%- endmacro %}
+
+{%- macro table_view(name, field, prefix) %}
+{{ field.value|truncate }}
+{%- endmacro %}
+
+{%- macro edit(name, field, prefix) %}
+{{kwargs.____}} {#XXX#}
+<div class="control-group {% if field.errors %}error{% endif %}">
+  <label for="form_{{ name }}_id">{{ field.title }}</label>
+    <div class="controls">
+      {% if field.choices|length <= 5 %} {# 5 is magic number #}
+        {% for key, val in field.choices %}
+        <label class="radio">
+          <input name="{{ prefix }}{{ name }}" type="radio"
+            value="{{ key }}" {% if key == field.value %}checked{% endif %} />
+          {{ val }}
+        </label>
+        {% endfor %}
+      {% else %}
+        <select name="{{ prefix }}{{ name }}">
+          <option>Select</option>
+          {% for key, val in field.choices %}
+            <option {% if key == field.value %}selected{% endif %} value="{{ key }}">{{ val }}</option>
+          {% endfor %}
+        </select>
+      {% endif %}
+    </div>
+    {% if field.errors %}<span class="help-inline">{{ field.errors|join(', ') }}</span>{% endif %}
+    {% if field.description %}<span class="help-block">{{ field.description }}</span>{% endif %}
+</div>
+{%- endmacro %}
+
+

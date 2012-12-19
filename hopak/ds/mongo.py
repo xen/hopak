@@ -1,0 +1,43 @@
+# -*- coding: utf-8 -*-
+#
+from .base import BaseDS
+
+class MongoDS(BaseDS):
+    """ Mongodb Data Source
+    """
+
+    def __init__(self, conn):
+        self.conn = conn
+
+    def save(self, id):
+        _id = _id or data.get('_id')
+        if not (_id is None):
+            self.conn.db.update({"_id": _id}, data, upsert=True, safe=True)
+            return _id
+        else:
+            return self.conn.db.insert(data)
+
+    def get(self, id):
+        return self.conn.db.find({"_id": _id})
+
+    def delete(self, id):
+        self.conn.db.remove({"_id": _id})
+
+    def save_multi(self, ids=[]):
+        pass
+
+    def get_multi(self, ids=[]):
+        pass
+
+    def delete_multi(self, ids=[]):
+        pass
+
+    def find(self, col, **kw):
+        return self.conn.db[col].find(kw)
+
+    def count(self, **kw):
+        return self.conn.db.count(kw)
+
+    def disconnect(self):
+        self.conn.disconnect()
+

@@ -1,0 +1,29 @@
+<!-- Система форм -->
+
+{%- macro edit(form, action=None) -%}
+  {% for name, field in form %}
+    {{field.itype}}
+    {% if field.locked %}
+      {{ field(name = name, state='view')|safe }}  
+    {% else %}
+      {{ field(name = name, state='edit')|safe }}
+    {% endif %}
+  {% endfor %}
+  <input type="hidden" value="1" name="form.submitted">
+  {% if action %}
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">{{ action }}</button>
+    </div>
+
+  {% endif %}
+{%- endmacro -%}
+
+{%- macro table_edit(form) -%}
+  <tr>
+  {% for name, field in form %}
+      <td field="{{name}}">
+        {{ field(name = name, state='inline_edit', **kwargs)|safe }}
+      </td>
+  {% endfor %}
+  </tr>
+{%- endmacro -%}
