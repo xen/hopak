@@ -9,13 +9,14 @@ class MongoDS(BaseDS):
     def __init__(self, conn):
         self.conn = conn
 
-    def save(self, id):
+    def save(self, kind, data, _id=None):
+        col = self.conn.db[kind]
         _id = _id or data.get('_id')
         if not (_id is None):
-            self.conn.db.update({"_id": _id}, data, upsert=True, safe=True)
+            col.update({"_id": _id}, data, upsert=True, safe=True)
             return _id
         else:
-            return self.conn.db.insert(data)
+            return col.insert(data)
 
     def get(self, id):
         return self.conn.db.find({"_id": _id})
