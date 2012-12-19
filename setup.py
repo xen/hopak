@@ -3,22 +3,22 @@
 
 from distutils.core import setup
 
-setup(name='formgear',
+setup(name='hopak',
       version='0.3.5',
-      description='Formgear framework base package',
+      description='hopak framework base package',
       long_description = open("README.rst").read(),
       author='Mikhail Kashkin',
       author_email='mkashkin@gmail.com',
-      url='https://github.com/xen/formgear',
+      url='https://github.com/xen/hopak',
       # more examples here http://docs.python.org/distutils/examples.html#pure-python-distribution-by-package
-      packages=['formgear', ],
+      packages=['hopak', ],
       license = "BSD",
       install_requires=[
           'jinja2',
           'pyyaml'
       ],
       package_data = {
-        'formgear': [
+        'hopak': [
             'templates/*.html',
             'templates/widgets/*.html',
         ]

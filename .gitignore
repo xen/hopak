@@ -1,7 +1,7 @@
 *.py[co]
 .DS_Store
 .installed.cfg
-formgear.egg-info
+hopak.egg-info
 bin
 etc
 .idea

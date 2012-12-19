@@ -3,7 +3,7 @@
 
 __author__ = 'xen'
 
-from formgear.models import Model #, ModelRegistry
+from hopak.models import Model #, ModelRegistry
 
 class User(Model):
     __yaml__ = 'doctype'

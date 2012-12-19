@@ -1,10 +1,12 @@
-Formgear
-#########
+Hopak 
+######
 
-.. image:: https://secure.travis-ci.org/xen/formgear.png
-    :target: https://travis-ci.org/xen/formgear
+Formely project name was ``formgear``.
 
-Main idea behind ``formgear`` allow iteratively create data models in easy 
+.. image:: https://secure.travis-ci.org/xen/hopak.png
+    :target: https://travis-ci.org/xen/hopak
+
+Main idea behind ``hopak`` allow iteratively create data models in easy 
 readable form and use them as part of your websites. At this moment only 
 MongoDB is allowed. 
 
@@ -19,10 +21,10 @@ But we are living in 21 century, have decoded DNA, pushing frontier into
 space, digging into core of the atoms and listening dubstep! Why we must to 
 write all that crap? Why computers cann't just do all this stuff?
 
-So that is why we invent ``formgear``. Because we want computers to do that they
+So that is why we invent ``hopak``. Because we want computers to do that they
 supposed to do. 
 
-`formgear` is only part of this effort, but there are already some results. So,
+`hopak` is only part of this effort, but there are already some results. So,
 example how to make simple model. We use `YAML` because it is very human 
 readable. Minimal file::
 
@@ -40,11 +42,11 @@ readable. Minimal file::
 This file is enough to use it as model in your python code::
 
     # models.py
-    from formgear.models import Model
+    from hopak.models import Model
     class User(Model):
         __yaml__ = 'user.yaml'
 
-``formgear`` is only a library for bigger framework, if you decide to use the whole 
+``hopak`` is only a library for bigger framework, if you decide to use the whole 
 stack then you will get site with admin section including list, edit, add, 
 search, delete sections for each models.
 
@@ -64,10 +66,10 @@ More
 
 Links:
 
-* ``formgear`` page on PyPI: `http://pypi.python.org/pypi/formgear/ 
-  <http://pypi.python.org/pypi/formgear/>`_
-* Github page: `https://github.com/xen/formgear 
-  <https://github.com/xen/formgear>`_
+* ``hopak`` page on PyPI: `http://pypi.python.org/pypi/hopak/ 
+  <http://pypi.python.org/pypi/hopak/>`_
+* Github page: `https://github.com/xen/hopak 
+  <https://github.com/xen/hopak>`_
 
 More documentation is approaching.
 

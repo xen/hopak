@@ -1,5 +1,5 @@
-from formgear.models import Model, ModelRegistry
-from formgear.fields import FieldsRegistry
+from hopak.models import Model, ModelRegistry
+from hopak.fields import FieldsRegistry
 import yaml
 
 
