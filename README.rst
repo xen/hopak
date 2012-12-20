@@ -53,6 +53,15 @@ search, delete sections for each models.
 Changes
 ========
 
+
+0.4.2: 
+
+- urgent fix for non saving model instances 
+
+0.4.1:
+
+- fix release, added ``hopak.ds`` to package
+
 0.4:
 
 - renamed from ``formgear`` to ``hopak``

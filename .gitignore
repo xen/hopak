@@ -10,3 +10,5 @@ build/
 *~
 develop-eggs
 .coverage
+MANIFEST
+dist
