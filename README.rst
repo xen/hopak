@@ -1,7 +1,7 @@
 Hopak 
 ######
 
-Formely project name was ``formgear``.
+Formerly project was ``formgear``.
 
 .. image:: https://api.travis-ci.org/xen/hopak.png?branch=master
     :target: https://travis-ci.org/xen/hopak
