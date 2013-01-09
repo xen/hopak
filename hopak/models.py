@@ -2,11 +2,12 @@
 #
 from __future__ import print_function
 import os
+import sys
 import yaml
 
 from hopak.fields import FieldsRegistry
 from hopak.widgets import WidgetRegistry
-from registry import Registry
+from hopak.registry import Registry
 from hopak.exceptions import *
 from hopak.utils import rel, yamls_files, file_resolve
 from hopak.ds import get_datasource
@@ -89,6 +90,17 @@ class FormWrap(object):
         return obj
 
 
+def resolve_to_file(name, fpath):
+    if os.access(name, 0):
+        # possible full path already provided
+        return name
+    if not name.endswith('.yaml'):
+        return resolve_to_file(name+'.yaml', fpath)
+    if os.access(os.path.join(os.path.dirname(fpath), name), 0):
+        return os.path.join(os.path.dirname(fpath), name)
+    return None
+
+
 class MetaModel(type):
     """
     Base model metaclass
@@ -106,10 +118,10 @@ class MetaModel(type):
 
             # try to find out by __yaml__ or by class name
             # __yaml__ = "order" or class Order(Models):
-            ypath = attrs.get('__yaml__') or name.lower()
-            if not ypath.endswith('.yaml'):
-                ypath = yamlsfiles.get(ypath, ypath)
-            if not os.access(ypath, 0) or not os.access(rel(ypath), 0):
+            ypath = resolve_to_file(attrs.get('__yaml__') or name.lower(), 
+                sys.modules[attrs['__module__']].__file__)
+
+            if not ypath:
                 raise YamlEntryNotFoundInListException
 
             cfg = yaml.safe_load(open(ypath))
@@ -134,7 +146,7 @@ class MetaModel(type):
 
         fields = []
         key_fields = attrs.get('__key__', [])
-        if not isinstance(key_fields, (list,tuple)):
+        if not isinstance(key_fields, (list, tuple)):
             key_fields = []
 
         for field in cfg.pop('fields', []):
@@ -325,7 +337,7 @@ class Model(object):
             if not (_id is None):
                 doc['_id'] = _id
         elif hasattr(self, '_id'):
-           doc['_id'] = self._id
+            doc['_id'] = self._id
 
         return doc
 
