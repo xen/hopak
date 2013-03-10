@@ -449,7 +449,7 @@ if specified in __key__"
 
     @classmethod
     def delete(cls, _filter, datasource=None):
-        if not isinstance(filter, dict):
+        if not isinstance(_filter, dict):
             _filter = {"_id": cls.__key_type(_filter)}
         ds = None
         if datasource:

@@ -21,9 +21,8 @@ class MongoDS(BaseDS):
     def get(self, id):
         return self.conn.db.find({"_id": _id})
 
-    def delete(self, id):
-        self.conn.db.remove({"_id": _id})
-
+    def remove(self, kind, fltr):
+        self.conn.db[kind].remove(fltr)
     def save_multi(self, ids=[]):
         pass
 
