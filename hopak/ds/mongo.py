@@ -18,7 +18,7 @@ class MongoDS(BaseDS):
         else:
             return col.insert(data)
 
-    def get(self, id):
+    def get(self, _id):
         return self.conn.db.find({"_id": _id})
 
     def remove(self, kind, fltr):
