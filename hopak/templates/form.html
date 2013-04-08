@@ -1,5 +1,11 @@
 <!-- Система форм -->
 
+{%- macro view(form) -%}
+  {% for name, field in form %}
+    {{ field(name = name, state='view')|safe }}
+  {% endfor %}
+{%- endmacro -%}
+
 {%- macro edit(form, action=None) -%}
   {% for name, field in form %}
     {{field.itype}}
