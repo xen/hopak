@@ -25,7 +25,10 @@ def model_wrap(model, **wrap_kw):
         kw.update(wrap_kw)
         model.__init__(self, *a, **kw)
 
-    attrs = {"__init__": __init__, "__fake__": True}
+    attrs = {"__init__": __init__, "__fake__": True, '__module__': model.__module__}
+    if hasattr(model, '__yaml__'):
+        attrs['__yaml__'] = model.__yaml__
+
     return MetaModel(model.__name__, (model,), attrs)
 
 class FormWrap(object):
