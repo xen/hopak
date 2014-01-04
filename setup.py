@@ -4,7 +4,7 @@
 from distutils.core import setup
 
 setup(name='hopak',
-      version='0.4.2',
+      version='0.5',
       description='hopak framework base package',
       long_description = open("README.rst").read(),
       author='Mikhail Kashkin',

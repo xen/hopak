@@ -53,6 +53,9 @@ search, delete sections for each models.
 Changes
 ========
 
+0.5:
+
+- Python 3 support
 
 0.4.2: 
 
