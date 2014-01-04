@@ -53,6 +53,10 @@ search, delete sections for each models.
 Changes
 ========
 
+0.5.1:
+
+- setup.py dependency changed to setuptools form distutils
+
 0.5:
 
 - Python 3 support
