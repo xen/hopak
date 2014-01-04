@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import models
+from . import models
 
 def _load(name):
     o = models.MetaModel(name, (models.Model,),

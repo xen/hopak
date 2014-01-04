@@ -4,11 +4,11 @@
 """ Basic validators
 """
 import re
-from hopak.exceptions import NotFoundValidatorException, InvalidValue
-from registry import Registry
 import inspect
-
 import sys
+
+from .exceptions import NotFoundValidatorException, InvalidValue
+from .registry import Registry
 
 PY3 = sys.version_info[0] == 3
 
@@ -18,6 +18,8 @@ if PY3: # pragma: no cover
 else:
     string_types = basestring,
     text_type = unicode
+
+del PY3
 
 class ValidatorRegistry(Registry):
     NotFound = NotFoundValidatorException

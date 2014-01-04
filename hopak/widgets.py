@@ -4,9 +4,8 @@ from __future__ import print_function
 import os
 
 from jinja2 import Environment, FileSystemLoader
-from registry import Registry
-from utils import widgets_path
-
+from .registry import Registry
+from .utils import widgets_path
 
 widgetspath = widgets_path()
 

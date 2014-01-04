@@ -1,7 +1,16 @@
 import sys
 import logging
-import os.path
+import os
 import re
+
+PY3 = sys.version_info[0] == 3
+
+if PY3: # pragma: no cover
+    walk = os.walk
+else:
+    walk = os.path.walk
+
+del PY3
 
 def rel(_file, *x):
     return os.path.normpath(
@@ -40,7 +49,7 @@ def yamls_files():
     """
     yaml_list = {}
     for cur_path in sys.path:
-        os.path.walk(cur_path, find_yaml, yaml_list)
+        walk(cur_path, find_yaml, yaml_list)
 
     logging.info("obtained yaml files %r" % (yaml_list,))
     return yaml_list
@@ -55,7 +64,7 @@ def widgets_path():
 
     widget_path_list = []
     for cur_path in sys.path:
-        os.path.walk(cur_path, find_widget_template, widget_path_list)
+        walk(cur_path, find_widget_template, widget_path_list)
     return widget_path_list
 
 

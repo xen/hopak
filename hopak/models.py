@@ -5,12 +5,12 @@ import os
 import sys
 import yaml
 
-from hopak.fields import FieldsRegistry
-from hopak.widgets import WidgetRegistry
-from hopak.registry import Registry
-from hopak.exceptions import *
-from hopak.utils import rel, yamls_files, file_resolve
-from hopak.ds import get_datasource
+from .fields import FieldsRegistry
+from .widgets import WidgetRegistry
+from .registry import Registry
+from .exceptions import *
+from .utils import rel, yamls_files, file_resolve
+from .ds import get_datasource
 
 from jinja2 import Environment, PackageLoader
 
@@ -121,7 +121,7 @@ class MetaModel(type):
 
             # try to find out by __yaml__ or by class name
             # __yaml__ = "order" or class Order(Models):
-            ypath = resolve_to_file(attrs.get('__yaml__') or name.lower(), 
+            ypath = resolve_to_file(attrs.get('__yaml__') or name.lower(),
                 sys.modules[attrs['__module__']].__file__)
 
             if not ypath:

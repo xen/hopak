@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import datetime, re
-
-import controllers
-import widgets
-from registry import Registry
-from hopak.exceptions import InvalidValue
+import datetime
+import re
+import sys
+from . import controllers
+from . import widgets
+from .registry import Registry
+from .exceptions import InvalidValue
 
 class NotFoundFieldException(Exception):
     pass
@@ -103,9 +104,9 @@ class BaseField(object):
 
             try:
                 validator(self, self.value)
-            except InvalidValue, e:
+            except InvalidValue:
                 ret = False
-                self.errors.append(e.args[1])
+                self.errors.append(ys.exc_info()[1])
         return ret
 
     def reinstance(self):
