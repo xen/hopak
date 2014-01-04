@@ -15,7 +15,8 @@ setup(name='hopak',
       license = "BSD",
       install_requires=[
           'jinja2',
-          'pyyaml'
+          'pyyaml',
+          'nose'
       ],
       include_package_data=True,
       classifiers=[
@@ -35,5 +36,5 @@ setup(name='hopak',
             'templates/*.html',
             'templates/widgets/*.html',
         ]
-    }
+      },
 )

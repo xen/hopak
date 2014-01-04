@@ -5,4 +5,5 @@ python:
 
 install:
   - pip install .
-script: bin/test
+  - pip install -r requirements.txt
+script: nosetest -v --with-coverage
